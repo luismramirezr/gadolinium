@@ -1,0 +1,10 @@
+version: '3.2'
+services:
+  server:
+    build: ./services/server
+    env_file: ./services/server/.env
+    ports:
+      - "3333:3333"
+    volumes:
+      - ./services/server:/usr/src/app
+      - /usr/src/app/node_modules/
