@@ -29,6 +29,7 @@
     "morgan-body": "^2.5.2",
     "serverless-http": "^2.6.0",
     "winston": "^3.3.3",
-    "winston-syslog": "^2.4.4"
+    "winston-syslog": "^2.4.4",
+    "youch": "^2.1.1"
   }
 }

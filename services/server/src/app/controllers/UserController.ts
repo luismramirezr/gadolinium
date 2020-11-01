@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import User from 'collections/User';
 
 class UserController {
@@ -16,10 +16,18 @@ class UserController {
     return res.json(result);
   }
 
-  async show(req: Request, res: Response): Promise<Response> {
+  async show(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> {
     const { params } = req;
-    const user = await User.find({ email: params.email });
-    return res.json(user);
+    try {
+      const user = await User.findOrFail({ email: params.email });
+      return res.json(user);
+    } catch (e) {
+      next(e);
+    }
   }
 }
 
