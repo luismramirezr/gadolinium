@@ -4,6 +4,9 @@ import cors from 'cors';
 import serverless from 'serverless-http';
 import morganBody from 'morgan-body';
 import logger from 'utils/logger';
+import database from 'database/index';
+import models from 'collections/index';
+import { tableSchema } from 'config/database';
 
 import routes from './routes';
 
@@ -11,10 +14,14 @@ class App {
   public server: Express;
 
   constructor() {
+    this.initialize();
     this.server = express();
+  }
+
+  async initialize() {
+    await database(tableSchema, models);
     this.middlewares();
     this.routes();
-    // this.globalEHandler();
   }
 
   middlewares(): void {
@@ -26,10 +33,7 @@ class App {
         maxBodyLength: 10000,
       });
     }
-    
-    if (process.env.NODE_ENV === 'production') {
-      this.server.use(logger);
-    }
+    this.server.use(logger);
   }
 
   routes(): void {

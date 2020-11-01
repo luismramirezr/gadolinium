@@ -7,12 +7,18 @@ import { APP_NAME, PAPERTRAIL_HOST, PAPERTRAIL_PORT } from 'config/constants';
 
 const localhost = os.hostname();
 
-const options = {
-  host: PAPERTRAIL_HOST,
-  port: PAPERTRAIL_PORT,
-  app_name: APP_NAME,
-  localhost,
-};
+const options =
+  process.env.NODE_ENV === 'production'
+    ? {
+        host: PAPERTRAIL_HOST,
+        port: PAPERTRAIL_PORT,
+        app_name: APP_NAME,
+        localhost,
+      }
+    : {
+        app_name: APP_NAME,
+        localhost,
+      };
 
 const logger = winston.createLogger();
 logger.add(new winston.transports.Syslog(options));

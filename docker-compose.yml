@@ -8,3 +8,11 @@ services:
     volumes:
       - ./services/server:/usr/src/app
       - /usr/src/app/node_modules/
+  dynamodb-local:
+    image: amazon/dynamodb-local:latest
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /data"
+    restart: always
+    volumes:
+      - ./dynamodb-data:/data
+    ports:
+      - "8000:8000"

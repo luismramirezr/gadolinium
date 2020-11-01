@@ -23,6 +23,7 @@
     "noImplicitAny": true,
     "typeRoots": ["node_modules/@types", "src/types"],
     "paths": {
+      "~/*": ["./src/*"],
       "types/*": ["./src/types/*"],
       "config/*": ["./src/config/*"],
       "database/*": ["./src/database/*"],
@@ -30,7 +31,7 @@
       "controllers/*": ["./src/app/controllers/*"],
       "validators/*": ["./src/app/validators/*"],
       "services/*": ["./src/services/*"],
-      "models/*": ["./src/app/models/*"],
+      "collections/*": ["src/app/collections/*"],
       "utils/*": ["./src/utils/*"]
     }
   },
