@@ -4,10 +4,8 @@ import cors from 'cors';
 import serverless from 'serverless-http';
 import morganBody from 'morgan-body';
 import logger from 'utils/logger';
-import database from 'database/index';
-import models from 'collections/index';
-import { tableSchema } from 'config/database';
 import HttpExceptionHandler from 'middlewares/HttpExceptionHandler';
+import '~/database';
 
 import routes from './routes';
 
@@ -15,12 +13,7 @@ class App {
   public server: Express;
 
   constructor() {
-    this.initialize();
     this.server = express();
-  }
-
-  async initialize() {
-    await database(tableSchema, models);
     this.middlewares();
     this.logger();
     this.routes();

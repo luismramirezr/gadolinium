@@ -1,49 +1,50 @@
-import { Collection, find, findChildren, insert } from 'dynaglue';
-import { Context } from 'dynaglue/dist/context';
-import { FindQuery } from 'dynaglue/dist/operations/find';
+import dynamoose from 'dynamoose';
+import { Document } from 'dynamoose/dist/Document';
+import { ModelType } from 'dynamoose/dist/General';
+import { Schema } from 'dynamoose/dist/Schema';
 
 class Model<T> {
-  public collection: Collection;
+  public database: ModelType<Document>;
 
-  public context: Context;
+  public schema: Schema;
 
-  constructor(data: Collection) {
-    this.collection = data;
+  private id: keyof T;
+
+  private type: string;
+
+  constructor(schema: Schema, id: keyof T, type: string) {
+    this.schema = schema;
+    this.id = id;
+    this.type = type;
+    this.database = dynamoose.model('GADOLINIUM');
   }
 
-  initialize(ctx: Context) {
-    this.context = ctx;
+  public async create(data: any) {
+    return this.database.create({
+      _id: data[this.id],
+      _type: this.type,
+      data,
+    }) as Promise<{ data: T } & Document>;
   }
 
-  async find(query: FindQuery) {
-    const data = await find(this.context, this.collection.name, query);
-    if (!data.items.length) return null;
-    const item = data.items.pop() as unknown;
-    return item as T;
+  public async find(data: any) {
+    return this.database.get({
+      _id: data,
+      _type: this.type,
+    }) as Promise<({ data: T } & Document) | undefined>;
   }
 
-  async findOrFail(query: FindQuery) {
-    const data = await this.find(query);
-    if (!data)
-      throw new Error(
-        `Item for collection ${this.collection.name} not found.
-        Query: ${JSON.stringify(query, null, 2)}`
+  public async findOrFail(data: any) {
+    const response = await this.find(data);
+    if (!response) {
+      throw Error(
+        JSON.stringify({
+          code: 404,
+          message: `Model with id ${data} does not exist`,
+        })
       );
-    return data;
-  }
-
-  async findAll(query: FindQuery) {
-    const data = await find(this.context, this.collection.name, query);
-    const items = data.items.map((item) => item as unknown) as Array<T>;
-    return { ...query, items };
-  }
-
-  async create(value: object) {
-    return insert(this.context, this.collection.name, value);
-  }
-
-  async findChildren(value: string) {
-    return findChildren(this.context, this.collection.name, value);
+    }
+    return response as { data: T } & Document;
   }
 }
 

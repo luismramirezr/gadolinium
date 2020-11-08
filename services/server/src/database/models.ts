@@ -1,8 +1,6 @@
-import Model from 'database/Model';
 import { createSchema } from 'database/database';
-import { User } from 'types/models';
 
-export const schema = createSchema({
+export const User = createSchema({
   _id: {
     type: String,
     required: true,
@@ -34,5 +32,3 @@ export const schema = createSchema({
     },
   },
 });
-
-export default new Model<User>(schema, 'email', 'USER');
