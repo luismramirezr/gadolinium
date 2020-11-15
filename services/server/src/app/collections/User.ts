@@ -1,5 +1,8 @@
+import bcrypt from 'bcryptjs';
 import Model from 'database/Model';
 import { createSchema } from 'database/database';
+import { SALT } from 'config/constants';
+
 import { User } from 'types/models';
 
 export const schema = createSchema({
@@ -35,4 +38,6 @@ export const schema = createSchema({
   },
 });
 
-export default new Model<User>(schema, 'email', 'USER');
+export default new Model<User>(schema, 'email', 'USER', ['password'], {
+  password: (value: string) => bcrypt.hashSync(value, SALT),
+});
