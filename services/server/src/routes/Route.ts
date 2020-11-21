@@ -45,6 +45,10 @@ class Route {
       this.router.get(name, ...this.getHanlders(handlers)),
     post: (name, handlers) =>
       this.router.post(name, ...this.getHanlders(handlers)),
+    put: (name, handlers) =>
+      this.router.put(name, ...this.getHanlders(handlers)),
+    delete: (name, handlers) =>
+      this.router.delete(name, ...this.getHanlders(handlers)),
   };
 }
 

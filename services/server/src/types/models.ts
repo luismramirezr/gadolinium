@@ -23,7 +23,7 @@ export interface Customer {
   email: string;
   hashedPassword?: string;
   role: ROLE_CUSTOMER;
-  addresses: { [key: string]: Address };
+  addresses: { [key: string]: Address | undefined };
   mainAddress: string;
 }
 

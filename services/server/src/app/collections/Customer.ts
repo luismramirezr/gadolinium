@@ -62,9 +62,24 @@ class Customer extends Collection<ICustomer> {
         SK: PK,
       },
     };
-    console.log(parameters);
     const customer = await Collection.Client.get(parameters).promise();
     return customer as any;
+  }
+
+  public async updateCustomer(data: ICustomer) {
+    const PK = this.getKey(data.email);
+    const transformedParameters = Collection.transformParameters(data);
+    const parameters: PutItemInput = {
+      TableName: Collection.TableName,
+      Item: {
+        ...transformedParameters,
+        PK,
+        SK: PK,
+      },
+    };
+
+    await Collection.Client.put(parameters).promise();
+    return data;
   }
 
   public async signIn(
