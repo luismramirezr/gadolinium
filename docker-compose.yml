@@ -1,4 +1,4 @@
-version: '3.2'
+version: '3.7'
 services:
   server:
     build: ./services/server
@@ -16,3 +16,16 @@ services:
       - ./dynamodb-data:/data
     ports:
       - "8000:8000"
+  local-dev-s3:
+    image: minio/minio
+    volumes:
+      - .minio/data:/export
+    ports:
+      - "9000:9000"
+    env_file: ./services/server/.env
+    command: server /export
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3

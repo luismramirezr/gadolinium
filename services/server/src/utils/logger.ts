@@ -15,6 +15,7 @@ const options = {
 };
 
 const logger = winston.createLogger();
+// @ts-ignore
 logger.add(new winston.transports.Syslog(options));
 
 expressWinston.requestWhitelist.push('body');
