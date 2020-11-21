@@ -12,6 +12,7 @@ class UserController {
   async show(req: Request, res: Response): Promise<Response | void> {
     const { params } = req;
     const user = await User.findOrFail(params.email);
+
     return res.json(user);
   }
 }

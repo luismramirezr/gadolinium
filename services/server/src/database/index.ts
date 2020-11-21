@@ -1,4 +1,4 @@
 import { createModels } from './database';
-import { User } from './models';
+import { User } from './schemas';
 
 createModels([User]);

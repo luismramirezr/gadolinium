@@ -6,11 +6,10 @@ export interface User {
   email: string;
   type: UserType;
   password: string;
+  adresses: Array<Address>;
 }
 
 export interface Address {
-  id: string;
-  userId: string;
   name: string;
   main: boolean;
   street: string;

@@ -2,6 +2,7 @@ import dynamoose from 'dynamoose';
 import { Document } from 'dynamoose/dist/Document';
 import { ModelType } from 'dynamoose/dist/General';
 import { Schema } from 'dynamoose/dist/Schema';
+import ValidationError from '~/utils/ValidationError';
 
 class Model<T> {
   public database: ModelType<Document>;
@@ -12,7 +13,7 @@ class Model<T> {
 
   private type: string;
 
-  private hideFields: Array<keyof T> | undefined;
+  public hideFields: Array<keyof T> | undefined;
 
   private setters: Partial<{ [K in keyof T]: Function }> | undefined;
 
@@ -26,8 +27,8 @@ class Model<T> {
     this.schema = schema;
     this.id = id;
     this.type = type;
-    this.hideFields = hideFields;
     this.setters = setters;
+    this.hideFields = hideFields;
     this.database = dynamoose.model('GADOLINIUM');
   }
 
@@ -37,10 +38,7 @@ class Model<T> {
     return !exists;
   }
 
-  private removeFields(data: any) {
-    Object.keys(data).forEach((key) => {
-      if (key.startsWith('_')) delete data[key];
-    });
+  public removeFields(data: any) {
     if (this.hideFields)
       this.hideFields.forEach((field) => delete data.data[field]);
     return data;
@@ -55,7 +53,7 @@ class Model<T> {
     return data;
   }
 
-  public async create(data: any) {
+  public async create(data: any, withHidden = false) {
     const withValues = this.setValues(data);
     const isUnique = await this.isUnique(withValues[this.id]);
     console.log('unique', isUnique);
@@ -72,20 +70,20 @@ class Model<T> {
       _type: this.type,
       data: withValues,
     })) as { data: T } & Document;
-    return this.removeFields(result);
+    return withHidden ? result : this.removeFields(result);
   }
 
-  public async find(data: any) {
+  public async find(data: any, withHidden = false) {
     const result = (await this.database.get({
       _id: data,
       _type: this.type,
     })) as ({ data: T } & Document) | undefined;
-    if (result) return this.removeFields(result);
+    if (result && !withHidden) return this.removeFields(result);
     return result;
   }
 
-  public async findOrFail(data: any) {
-    const response = await this.find(data);
+  public async findOrFail(data: any, withHidden = false) {
+    const response = await this.find(data, withHidden);
     if (!response) {
       throw Error(
         JSON.stringify({
@@ -95,6 +93,10 @@ class Model<T> {
       );
     }
     return response as { data: T } & Document;
+  }
+
+  public validationError(message: any) {
+    throw new ValidationError(message);
   }
 }
 
