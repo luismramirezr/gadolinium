@@ -217,4 +217,8 @@ dynamodb-data
 #minio
 .minio
 
+# keys
+*.key
+*.key.pub
+
 # End of https://www.toptal.com/developers/gitignore/api/linux,macos,windows,visualstudiocode,node,react,dotenv
