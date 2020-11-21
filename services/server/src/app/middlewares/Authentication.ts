@@ -19,13 +19,12 @@ export const authentication = async (
     const user = jwt.verify(authentication, rsa);
     if (user) {
       req.user = user as UserAuth;
-      next();
-    } else {
-      throw Error('Empty token');
+      return next();
     }
+    throw Error('Empty token');
   } catch (e) {
     console.log(e);
-    next(new HttpError('Unauthorized', 403));
+    return next(new HttpError('Unauthorized', 403));
   }
 };
 
@@ -34,8 +33,7 @@ export const ensureAdmin = async (
   _res: Response,
   next: NextFunction
 ) => {
-  if (req.user?.role !== 'ADMIN') {
-    next(new HttpError('Unauthorized', 403));
-  }
+  if (req.user?.role !== 'ADMIN')
+    return next(new HttpError('Unauthorized', 403));
   next();
 };
