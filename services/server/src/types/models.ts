@@ -36,3 +36,19 @@ export interface Address {
   zip: string;
   country: string;
 }
+
+export interface Category {
+  slug: string;
+  name: string;
+  description: string;
+  photo: string;
+}
+
+export interface Product {
+  category: string;
+  slug: string;
+  name: string;
+  description: string;
+  value: number;
+  stock: number;
+}
