@@ -5,6 +5,14 @@ import Product from '~/app/collections/Product';
 import HttpError from '~/utils/HttpError';
 
 class CategoryController {
+  async index(req: Request, res: Response): Promise<Response> {
+    const { categoryId } = req.params;
+
+    const category = await Category.getCategory(categoryId);
+
+    return res.json(category.products || []);
+  }
+
   async create(req: Request, res: Response): Promise<Response> {
     const { category } = req.params;
     const { body } = req;

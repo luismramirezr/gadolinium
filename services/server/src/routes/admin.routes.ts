@@ -8,9 +8,11 @@ const { routes, router } = Route;
 routes.post('/customers', CustomerController.create);
 routes.get('/customers/:email', CustomerController.show);
 
+routes.get('/categories', CategoryController.index);
 routes.post('/categories', CategoryController.create);
 routes.get('/categories/:slug', CategoryController.show);
 
+routes.get('/categories/:category/products', ProductController.index);
 routes.post('/categories/:category/products', ProductController.create);
 routes.get('/categories/:category/products/:slug', ProductController.show);
 
