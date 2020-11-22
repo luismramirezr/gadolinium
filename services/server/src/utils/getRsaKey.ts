@@ -1,11 +1,11 @@
 import s3 from 'services/s3';
-import { RSA_KEY, S3_BUCKET } from 'config/constants';
+import { RSA_KEY, S3_SECRETS_BUCKET } from 'config/constants';
 import HttpError from 'utils/HttpError';
 
 const getRsaKey = async () => {
   const keyFile = await s3
     .getObject({
-      Bucket: S3_BUCKET,
+      Bucket: S3_SECRETS_BUCKET,
       Key: RSA_KEY,
     })
     .promise();

@@ -1,5 +1,6 @@
 export const NODE_ENV = process.env.NODE_ENV;
 export const APP_NAME = process.env.APP_NAME;
+export const API_URL = process.env.API_URL;
 
 export const PAPERTRAIL_HOST = process.env.PAPERTRAIL_HOST;
 export const PAPERTRAIL_PORT = process.env.PAPERTRAIL_PORT;
@@ -18,3 +19,4 @@ export const DYNAMODB_ENDPOINT = process.env.DYNAMODB_ENDPOINT;
 
 export const S3_ENDPOINT = process.env.S3_ENDPOINT;
 export const S3_BUCKET = process.env.S3_BUCKET!;
+export const S3_SECRETS_BUCKET = process.env.S3_SECRETS_BUCKET!;

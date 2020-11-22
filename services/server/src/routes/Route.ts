@@ -35,7 +35,8 @@ class Route {
     handlers: Array<RequestHandler> | RequestHandler
   ): Array<RequestHandler> {
     if (Array.isArray(handlers)) {
-      return handlers.map((hanlder) => this.wrapper(hanlder));
+      const controller = handlers.pop()!;
+      return [...handlers, this.wrapper(controller)];
     }
     return [this.wrapper(handlers)];
   }

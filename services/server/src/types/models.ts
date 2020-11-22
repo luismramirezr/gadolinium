@@ -74,3 +74,22 @@ export interface Order {
   address: { name: string } & Address;
   products: Array<Product & { quantity: number }>;
 }
+
+export interface File {
+  fieldname: string;
+  originalname: string;
+  encoding: string;
+  mimetype: string;
+  size: number;
+  bucket: string;
+  key: string;
+  acl: string;
+  contentType: string;
+  contentDisposition: string;
+  storageClass: string;
+  serverSideEncryption: string;
+  metadata: string;
+  location: string;
+  etag: string;
+  public: boolean;
+}
