@@ -43,11 +43,26 @@ class Category extends Collection<ICategory> {
         ...transformedParameters,
         PK,
         SK: PK,
+        GSI1PK: this.Prefix as AttributeValue,
+        GSI1SK: PK,
       },
       ConditionExpression: 'attribute_not_exists(PK)',
     };
     await Collection.Client.put(parameters).promise();
     return data;
+  }
+
+  public async getCategories() {
+    const parameters: QueryInput = {
+      TableName: Collection.TableName,
+      IndexName: 'GSI1',
+      KeyConditionExpression: 'GSI1PK = :pk',
+      ExpressionAttributeValues: {
+        ':pk': this.Prefix as AttributeValue,
+      },
+    };
+    const data = await Collection.Client.query(parameters).promise();
+    return data.Items;
   }
 
   public async getCategory(
