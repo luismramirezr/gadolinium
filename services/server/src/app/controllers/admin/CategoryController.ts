@@ -16,8 +16,6 @@ class CategoryController {
 
     const result = await Category.getCategory(slug);
 
-    if (!result.category) throw new HttpError('Category not found', 404);
-
     return res.json(result);
   }
 }

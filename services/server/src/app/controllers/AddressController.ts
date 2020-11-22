@@ -9,16 +9,15 @@ class CustomerController {
     const { body } = req;
 
     const customer = await Customer.getCustomer(email);
-    if (!customer.Item) throw new HttpError('Customer not found', 404);
 
-    const { addresses = {}, mainAddress } = customer.Item;
+    const { addresses = {}, mainAddress } = customer;
     if (addresses[body.name])
       throw new HttpError('Address already exists', 400);
 
     addresses[body.name] = { ...body, name: undefined, mainAddress: undefined };
 
     const data = {
-      ...customer.Item,
+      ...customer,
       addresses,
       mainAddress: body.mainAddress || !mainAddress ? body.name : mainAddress,
     };
@@ -32,9 +31,8 @@ class CustomerController {
     const { body } = req;
 
     const customer = await Customer.getCustomer(email);
-    if (!customer.Item) throw new HttpError('Customer not found', 404);
 
-    const { addresses, mainAddress } = customer.Item;
+    const { addresses, mainAddress } = customer;
     if (!addresses[name]) throw new HttpError('Address does not exist', 404);
 
     if (body.name) {
@@ -49,7 +47,7 @@ class CustomerController {
     }
 
     const data = {
-      ...customer.Item,
+      ...customer,
       addresses,
       mainAddress: body.mainAddress ? body.name || name : mainAddress,
     };
@@ -63,18 +61,15 @@ class CustomerController {
 
     const result = await Customer.getCustomer(email);
 
-    if (!result.Item) throw new HttpError('Customer not found', 404);
-
-    return res.json({ ...result.Item, hashedPassword: undefined });
+    return res.json({ ...result, hashedPassword: undefined });
   }
 
   async destroy(req: Request, res: Response): Promise<Response> {
     const { email, name } = req.params;
 
     const customer = await Customer.getCustomer(email);
-    if (!customer.Item) throw new HttpError('Customer not found', 404);
 
-    const { addresses, mainAddress } = customer.Item;
+    const { addresses, mainAddress } = customer;
     if (!addresses[name]) throw new HttpError('Address does not exist', 404);
     if (mainAddress === name)
       throw new HttpError(
@@ -83,7 +78,7 @@ class CustomerController {
       );
 
     const data = {
-      ...customer.Item,
+      ...customer,
       addresses: { ...addresses, [name]: undefined },
     };
     if (

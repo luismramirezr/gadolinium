@@ -8,6 +8,7 @@ import {
 } from 'aws-sdk/clients/dynamodb';
 
 import { Category as ICategory, Product } from 'types/models';
+import HttpError from '~/utils/HttpError';
 
 class Category extends Collection<ICategory> {
   constructor(prefix: string) {
@@ -70,7 +71,7 @@ class Category extends Collection<ICategory> {
         products: category.Items as any,
       };
 
-    return {};
+    throw new HttpError('Category not found', 404);
   }
 }
 

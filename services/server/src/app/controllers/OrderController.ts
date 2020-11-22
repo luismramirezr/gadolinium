@@ -14,9 +14,7 @@ class OrderController {
 
     const customer = await Customer.getCustomer(email);
 
-    if (!customer.Item) throw new HttpError('Customer not found', 404);
-
-    const address = customer.Item.addresses[body.address];
+    const address = customer.addresses[body.address];
 
     if (!address) throw new HttpError('Address not found', 404);
 
@@ -37,7 +35,7 @@ class OrderController {
 
     const createdAt = new Date().toISOString();
 
-    const order = await Order.createOrder(customer.Item.PK, {
+    const order = await Order.createOrder(customer.PK, {
       ...body,
       createdAt,
       status: 'PLACED',
@@ -49,13 +47,7 @@ class OrderController {
   }
 
   async show(req: Request, res: Response): Promise<Response> {
-    const { email, orderId } = req.params;
-
-    // if (email) {
-    //   const customer = await Customer.getCustomerOrders(email);
-    //   if (!customer.orders.find((order) => order.orderId === orderId))
-    //     throw new HttpError('Order not found', 404);
-    // }
+    const { orderId } = req.params;
 
     const order = await Order.getOrder(orderId);
     return res.json(order);

@@ -64,7 +64,7 @@ class Customer extends Collection<ICustomer> {
 
   public async getCustomer(
     email: string
-  ): Promise<{ Item?: ICustomer & WithKeys & WithGSI }> {
+  ): Promise<ICustomer & WithKeys & WithGSI> {
     const PK = this.getKey(email);
     const parameters: GetItemInput = {
       TableName: Collection.TableName,
@@ -74,7 +74,8 @@ class Customer extends Collection<ICustomer> {
       },
     };
     const customer = await Collection.Client.get(parameters).promise();
-    return customer as any;
+    if (!customer.Item) throw new HttpError('Admin not found', 404);
+    return customer.Item as any;
   }
 
   public async updateCustomer(
@@ -106,14 +107,12 @@ class Customer extends Collection<ICustomer> {
       verificationToken: string;
     };
   }> {
-    const customer = (await this.getCustomer(email)) as {
-      Item?: ICustomer & WithKeys & WithGSI;
-    };
-    if (!customer.Item) throw new HttpError('Unauthorized', 403);
+    const customer = await this.getCustomer(email);
+    if (!customer) throw new HttpError('Unauthorized', 403);
 
     const isPasswordValid = bcrypt.compareSync(
       password,
-      customer.Item.hashedPassword || ''
+      customer.hashedPassword || ''
     );
 
     if (!isPasswordValid) throw new HttpError('Unauthorized', 403);
@@ -121,20 +120,20 @@ class Customer extends Collection<ICustomer> {
     const rsa = await getRsaKey();
 
     const sessionToken = jwt.sign(
-      { ...customer.Item, hashedPassword: undefined },
+      { ...customer, hashedPassword: undefined },
       rsa,
       {
         expiresIn: JWT_EXPIRATION,
       }
     );
     const refreshToken = jwt.sign(
-      { ...customer.Item, hashedPassword: undefined },
+      { ...customer, hashedPassword: undefined },
       rsa
     );
     const verificationToken = jwt.sign(sessionToken, rsa);
 
     return {
-      customer: { ...customer.Item, hashedPassword: undefined },
+      customer: { ...customer, hashedPassword: undefined },
       tokens: { sessionToken, refreshToken, verificationToken },
     } as any;
   }

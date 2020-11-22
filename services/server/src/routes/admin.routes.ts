@@ -5,8 +5,8 @@ import ProductController from '~/app/controllers/admin/ProductController';
 
 const { routes, router } = Route;
 
-routes.post('/customer', CustomerController.create);
-routes.get('/customer/:email', CustomerController.show);
+routes.post('/customers', CustomerController.create);
+routes.get('/customers/:email', CustomerController.show);
 
 routes.post('/categories', CategoryController.create);
 routes.get('/categories/:slug', CategoryController.show);

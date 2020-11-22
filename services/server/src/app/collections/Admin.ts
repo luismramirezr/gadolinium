@@ -9,7 +9,7 @@ import {
   GetItemInput,
 } from 'aws-sdk/clients/dynamodb';
 
-import { Admin as IAdmin, ROLE_ADMIN } from 'types/models';
+import { Admin as IAdmin, ROLE_ADMIN, WithGSI, WithKeys } from 'types/models';
 import HttpError from '~/utils/HttpError';
 import getRsaKey from '~/utils/getRsaKey';
 
@@ -53,7 +53,7 @@ class Admin extends Collection<IAdmin> {
     };
   }
 
-  public async getAdmin(email: string): Promise<{ Item?: IAdmin }> {
+  public async getAdmin(email: string): Promise<IAdmin & WithKeys & WithGSI> {
     const PK = this.getKey(email);
     const parameters: GetItemInput = {
       TableName: Collection.TableName,
@@ -64,7 +64,8 @@ class Admin extends Collection<IAdmin> {
     };
 
     const admin = await Collection.Client.get(parameters).promise();
-    return admin as any;
+    if (!admin.Item) throw new HttpError('Admin not found', 404);
+    return admin.Item as any;
   }
 
   public async signIn(
@@ -78,12 +79,12 @@ class Admin extends Collection<IAdmin> {
       verificationToken: string;
     };
   }> {
-    const admin = (await this.getAdmin(email)) as { Item?: IAdmin };
-    if (!admin.Item) throw new HttpError('Unauthorized', 403);
+    const admin = await this.getAdmin(email);
+    if (!admin) throw new HttpError('Unauthorized', 403);
 
     const isPasswordValid = bcrypt.compareSync(
       password,
-      admin.Item.hashedPassword || ''
+      admin.hashedPassword || ''
     );
 
     if (!isPasswordValid) throw new HttpError('Unauthorized', 403);
@@ -91,20 +92,17 @@ class Admin extends Collection<IAdmin> {
     const rsa = await getRsaKey();
 
     const sessionToken = jwt.sign(
-      { ...admin.Item, hashedPassword: undefined },
+      { ...admin, hashedPassword: undefined },
       rsa,
       {
         expiresIn: JWT_EXPIRATION,
       }
     );
-    const refreshToken = jwt.sign(
-      { ...admin.Item, hashedPassword: undefined },
-      rsa
-    );
+    const refreshToken = jwt.sign({ ...admin, hashedPassword: undefined }, rsa);
     const verificationToken = jwt.sign(sessionToken, rsa);
 
     return {
-      admin: { ...admin.Item, hashedPassword: undefined },
+      admin: { ...admin, hashedPassword: undefined },
       tokens: { sessionToken, refreshToken, verificationToken },
     };
   }
