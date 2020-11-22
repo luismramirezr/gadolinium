@@ -3,6 +3,15 @@ export type ROLE_CUSTOMER = 'CUSTOMER';
 
 export type ROLE = ROLE_ADMIN | ROLE_CUSTOMER;
 
+export interface WithKeys {
+  PK: string;
+  SK: string;
+}
+
+export interface WithGSI {
+  GSI1PK: string;
+  GSI1SK: string;
+}
 export interface UserAuth {
   name: string;
   surname: string;
@@ -51,4 +60,14 @@ export interface Product {
   description: string;
   value: number;
   stock: number;
+}
+
+export interface Order {
+  orderId: string;
+  createdAt: string;
+  updatedAt: string;
+  status: string;
+  totalValue: number;
+  address: { name: string } & Address;
+  products: Array<Product & { quantity: number }>;
 }

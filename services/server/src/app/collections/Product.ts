@@ -59,7 +59,7 @@ class Product extends Collection<IProduct> {
     return data;
   }
 
-  public async getProduct(slug: string): Promise<{ Item?: IProduct }> {
+  public async getProduct(slug: string): Promise<IProduct> {
     const PK = this.getUniqueKey(slug);
     const parameters: QueryInput = {
       TableName: Collection.TableName,
@@ -71,7 +71,7 @@ class Product extends Collection<IProduct> {
     };
     const result = await Collection.Client.query(parameters).promise();
     if (!result.Count || !result.Items?.length)
-      throw new HttpError('Product not found', 404);
+      throw new HttpError(`Product '${slug}' not found`, 404);
     const product = result.Items?.shift();
     return product as any;
   }

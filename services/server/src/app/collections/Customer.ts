@@ -7,11 +7,18 @@ import {
   PutItemInput,
   AttributeValue,
   GetItemInput,
+  QueryInput,
 } from 'aws-sdk/clients/dynamodb';
 
-import { Customer as ICustomer, ROLE_CUSTOMER } from 'types/models';
-import HttpError from '~/utils/HttpError';
-import getRsaKey from '~/utils/getRsaKey';
+import {
+  Customer as ICustomer,
+  Order,
+  ROLE_CUSTOMER,
+  WithGSI,
+  WithKeys,
+} from 'types/models';
+import HttpError from 'utils/HttpError';
+import getRsaKey from 'utils/getRsaKey';
 
 export interface CreateCustomerInput extends ICustomer {
   password: string;
@@ -26,7 +33,9 @@ class Customer extends Collection<ICustomer> {
     return `${this.Prefix}#${email}` as any;
   }
 
-  public async createCustomer(data: CreateCustomerInput): Promise<ICustomer> {
+  public async createCustomer(
+    data: CreateCustomerInput
+  ): Promise<ICustomer & WithKeys & WithGSI> {
     const PK = this.getKey(data.email);
     const hashedPassword = bcrypt.hashSync(data.password, SALT);
     const input = {
@@ -50,10 +59,12 @@ class Customer extends Collection<ICustomer> {
     return {
       ...input,
       hashedPassword: undefined,
-    };
+    } as any;
   }
 
-  public async getCustomer(email: string): Promise<{ Item?: ICustomer }> {
+  public async getCustomer(
+    email: string
+  ): Promise<{ Item?: ICustomer & WithKeys & WithGSI }> {
     const PK = this.getKey(email);
     const parameters: GetItemInput = {
       TableName: Collection.TableName,
@@ -66,7 +77,9 @@ class Customer extends Collection<ICustomer> {
     return customer as any;
   }
 
-  public async updateCustomer(data: ICustomer) {
+  public async updateCustomer(
+    data: ICustomer
+  ): Promise<ICustomer & WithKeys & WithGSI> {
     const PK = this.getKey(data.email);
     const transformedParameters = Collection.transformParameters(data);
     const parameters: PutItemInput = {
@@ -79,7 +92,7 @@ class Customer extends Collection<ICustomer> {
     };
 
     await Collection.Client.put(parameters).promise();
-    return data;
+    return data as any;
   }
 
   public async signIn(
@@ -93,7 +106,9 @@ class Customer extends Collection<ICustomer> {
       verificationToken: string;
     };
   }> {
-    const customer = (await this.getCustomer(email)) as { Item?: ICustomer };
+    const customer = (await this.getCustomer(email)) as {
+      Item?: ICustomer & WithKeys & WithGSI;
+    };
     if (!customer.Item) throw new HttpError('Unauthorized', 403);
 
     const isPasswordValid = bcrypt.compareSync(
@@ -121,7 +136,32 @@ class Customer extends Collection<ICustomer> {
     return {
       customer: { ...customer.Item, hashedPassword: undefined },
       tokens: { sessionToken, refreshToken, verificationToken },
+    } as any;
+  }
+
+  public async getCustomerOrders(
+    email: string
+  ): Promise<{
+    customer: ICustomer & WithKeys & WithGSI;
+    orders: Array<Order>;
+  }> {
+    const PK = this.getKey(email);
+    const parameters: QueryInput = {
+      TableName: Collection.TableName,
+      KeyConditionExpression: 'PK = :pk',
+      ExpressionAttributeValues: {
+        ':pk': PK,
+      },
     };
+    const customer = await Collection.Client.query(parameters).promise();
+
+    if (customer.Items)
+      return {
+        customer: customer.Items.shift() as any,
+        orders: customer.Items as any,
+      } as any;
+
+    throw new HttpError('Customer not found', 404);
   }
 }
 
