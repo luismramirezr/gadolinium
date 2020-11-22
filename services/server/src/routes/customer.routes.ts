@@ -1,15 +1,15 @@
 import Route from './Route';
-import AddressController from 'controllers/AddressController';
-import OrderController from 'controllers/OrderController';
+import AddressController from 'controllers/customer/AddressController';
+import OrderController from 'controllers/customer/OrderController';
 
 const { routes, router } = Route;
 
-routes.post('/customers/:email/addresses', AddressController.create);
-routes.put('/customers/:email/addresses/:name', AddressController.update);
-routes.delete('/customers/:email/addresses/:name', AddressController.destroy);
+routes.post('/addresses', AddressController.create);
+routes.put('/addresses/:name', AddressController.update);
+routes.delete('/addresses/:name', AddressController.destroy);
 
-routes.post('/customers/:email/orders', OrderController.create);
-routes.get('/customers/:email/orders', OrderController.showCustomerOrders);
+routes.post('/orders', OrderController.create);
+routes.get('/orders', OrderController.showCustomerOrders);
 
 routes.get('/orders/:orderId', OrderController.show);
 

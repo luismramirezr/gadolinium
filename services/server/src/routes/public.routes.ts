@@ -1,6 +1,6 @@
 import Route from './Route';
-import SessionController from 'controllers/SessionController';
-import CustomerController from 'controllers/CustomerController';
+import SessionController from 'controllers/public/SessionController';
+import CustomerController from 'controllers/public/CustomerController';
 
 const { routes, router } = Route;
 

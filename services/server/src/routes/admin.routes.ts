@@ -1,7 +1,7 @@
 import Route from './Route';
-import CustomerController from 'controllers/CustomerController';
-import CategoryController from '~/app/controllers/admin/CategoryController';
-import ProductController from '~/app/controllers/admin/ProductController';
+import CustomerController from 'controllers/admin/CustomerController';
+import CategoryController from 'controllers/admin/CategoryController';
+import ProductController from 'controllers/admin/ProductController';
 
 const { routes, router } = Route;
 

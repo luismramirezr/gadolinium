@@ -72,3 +72,14 @@ export const ensureCustomer = async (
     return next(new HttpError('Unauthorized', 403));
   next();
 };
+
+export const ensureSelf = (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+) => {
+  const { email } = req.params;
+  const { user } = req;
+  if (!email || user?.email) return next(new HttpError('Unauthorized', 403));
+  next();
+};
