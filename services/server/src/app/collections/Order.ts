@@ -53,6 +53,7 @@ class Order extends Collection<IOrder> {
             TableName: Collection.TableName,
             Item: {
               ...transformedParameters,
+              customerId: customerId as AttributeValue,
               orderId: id as AttributeValue,
               PK: customerId as AttributeValue,
               SK: uniqueKey,

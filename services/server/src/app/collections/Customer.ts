@@ -74,7 +74,7 @@ class Customer extends Collection<ICustomer> {
       },
     };
     const customer = await Collection.Client.get(parameters).promise();
-    if (!customer.Item) throw new HttpError('Admin not found', 404);
+    if (!customer.Item) throw new HttpError('Customer not found', 404);
     return customer.Item as any;
   }
 

@@ -80,6 +80,7 @@ export const ensureSelf = (
 ) => {
   const { email } = req.params;
   const { user } = req;
-  if (!email || user?.email) return next(new HttpError('Unauthorized', 403));
+  if (!email || user?.email !== email)
+    return next(new HttpError('Unauthorized', 403));
   next();
 };

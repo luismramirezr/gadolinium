@@ -1,9 +1,9 @@
-import { UserAuth } from 'types/models';
+import { Admin, Customer, WithGSI, WithKeys } from 'types/models';
 
 declare global {
   namespace Express {
     interface Request {
-      user?: UserAuth;
+      user?: (Admin | Customer) & WithKeys & WithGSI;
     }
   }
 }

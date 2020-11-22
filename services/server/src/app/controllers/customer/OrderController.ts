@@ -5,16 +5,20 @@ import Product from 'collections/Product';
 import { Request, Response } from 'express';
 import HttpError from '~/utils/HttpError';
 
-import { Product as IProduct } from 'types/models';
+import {
+  Customer as ICustomer,
+  Product as IProduct,
+  WithKeys,
+} from 'types/models';
 
 class OrderController {
   async create(req: Request, res: Response): Promise<Response> {
     const { body } = req;
-    const { email } = req.params;
+    const customer = req.user as ICustomer & WithKeys;
 
-    const customer = await Customer.getCustomer(email);
+    if (!customer) throw new HttpError('Unauthorized', 403);
 
-    const address = customer.addresses[body.address];
+    const address = customer.addresses && customer.addresses[body.address];
 
     if (!address) throw new HttpError('Address not found', 404);
 
@@ -40,7 +44,7 @@ class OrderController {
       createdAt,
       status: 'PLACED',
       totalValue,
-      address: { ...address, name: body.address },
+      address,
       products,
     });
     return res.json(order);
@@ -48,15 +52,18 @@ class OrderController {
 
   async show(req: Request, res: Response): Promise<Response> {
     const { orderId } = req.params;
+    const customer = req.user as ICustomer & WithKeys;
 
     const order = await Order.getOrder(orderId);
+    if (order.order.customerId !== customer.PK)
+      throw new HttpError('Unauthorized', 403);
     return res.json(order);
   }
 
   async showCustomerOrders(req: Request, res: Response): Promise<Response> {
-    const { email } = req.params;
+    const customer = req.user as ICustomer & WithKeys;
 
-    const result = await Customer.getCustomerOrders(email);
+    const result = await Customer.getCustomerOrders(customer.email);
     return res.json(result);
   }
 }

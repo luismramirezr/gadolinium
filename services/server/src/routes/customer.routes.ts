@@ -4,9 +4,10 @@ import OrderController from 'controllers/customer/OrderController';
 
 const { routes, router } = Route;
 
+routes.get('/addresses/:slug', AddressController.show);
 routes.post('/addresses', AddressController.create);
-routes.put('/addresses/:name', AddressController.update);
-routes.delete('/addresses/:name', AddressController.destroy);
+routes.put('/addresses/:slug', AddressController.update);
+routes.delete('/addresses/:slug', AddressController.destroy);
 
 routes.post('/orders', OrderController.create);
 routes.get('/orders', OrderController.showCustomerOrders);

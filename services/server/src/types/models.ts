@@ -37,6 +37,8 @@ export interface Customer {
 }
 
 export interface Address {
+  name: string;
+  slug: string;
   street: string;
   number: string;
   complement: string;
@@ -63,6 +65,7 @@ export interface Product {
 }
 
 export interface Order {
+  customerId: string;
   orderId: string;
   createdAt: string;
   updatedAt: string;

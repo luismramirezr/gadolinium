@@ -1,25 +1,24 @@
 import Customer from 'collections/Customer';
 
 import { Request, Response } from 'express';
+import { Customer as ICustomer, WithKeys } from '~/types/models';
 import HttpError from '~/utils/HttpError';
 
 class CustomerController {
   async create(req: Request, res: Response): Promise<Response> {
-    const { email } = req.params;
     const { body } = req;
-
-    const customer = await Customer.getCustomer(email);
+    const customer = req.user as ICustomer & WithKeys;
 
     const { addresses = {}, mainAddress } = customer;
-    if (addresses[body.name])
+    if (addresses[body.slug])
       throw new HttpError('Address already exists', 400);
 
-    addresses[body.name] = { ...body, name: undefined, mainAddress: undefined };
+    addresses[body.slug] = { ...body, mainAddress: undefined };
 
     const data = {
       ...customer,
       addresses,
-      mainAddress: body.mainAddress || !mainAddress ? body.name : mainAddress,
+      mainAddress: body.mainAddress || !mainAddress ? body.slug : mainAddress,
     };
 
     const result = await Customer.updateCustomer(data);
@@ -27,29 +26,29 @@ class CustomerController {
   }
 
   async update(req: Request, res: Response): Promise<Response> {
-    const { email, name } = req.params;
+    const { slug } = req.params;
     const { body } = req;
 
-    const customer = await Customer.getCustomer(email);
+    const customer = req.user as ICustomer & WithKeys;
 
     const { addresses, mainAddress } = customer;
-    if (!addresses[name]) throw new HttpError('Address does not exist', 404);
+    if (!addresses[slug]) throw new HttpError('Address does not exist', 404);
 
-    if (body.name) {
-      addresses[body.name] = {
-        ...addresses[name],
+    if (body.slug) {
+      addresses[body.slug] = {
+        ...addresses[slug],
         ...body,
         mainAddress: undefined,
       };
-      addresses[name] = undefined;
+      addresses[slug] = undefined;
     } else {
-      addresses[name] = { ...addresses[name], ...body, mainAddress: undefined };
+      addresses[slug] = { ...addresses[slug], ...body, mainAddress: undefined };
     }
 
     const data = {
       ...customer,
       addresses,
-      mainAddress: body.mainAddress ? body.name || name : mainAddress,
+      mainAddress: body.mainAddress ? body.slug || slug : mainAddress,
     };
 
     const result = await Customer.updateCustomer(data);
@@ -57,39 +56,37 @@ class CustomerController {
   }
 
   async show(req: Request, res: Response): Promise<Response> {
-    const { email } = req.params;
+    const { slug } = req.params;
+    const customer = req.user as ICustomer & WithKeys;
 
-    const result = await Customer.getCustomer(email);
+    const address = customer.addresses ? customer.addresses[slug] : undefined;
+    if (!address) throw new HttpError('Address not found', 404);
 
-    return res.json({ ...result, hashedPassword: undefined });
+    return res.json(address);
   }
 
   async destroy(req: Request, res: Response): Promise<Response> {
-    const { email, name } = req.params;
-
-    const customer = await Customer.getCustomer(email);
+    const { slug } = req.params;
+    const customer = req.user as ICustomer & WithKeys;
 
     const { addresses, mainAddress } = customer;
-    if (!addresses[name]) throw new HttpError('Address does not exist', 404);
-    if (mainAddress === name)
+    if (!addresses[slug]) throw new HttpError('Address not found', 404);
+    if (mainAddress === slug)
       throw new HttpError(
         'This address can not be deleted because is the main address',
         400
       );
 
-    const data = {
-      ...customer,
-      addresses: { ...addresses, [name]: undefined },
-    };
-    if (
-      !Object.keys(data.addresses).some(
-        (key) => data.addresses[key] !== undefined
-      )
-    )
+    if (Object.keys(addresses).length === 1)
       throw new HttpError(
         'This address can not be deleted because is the last one',
         400
       );
+
+    const data = {
+      ...customer,
+      addresses: { ...addresses, [slug]: undefined },
+    };
 
     const result = await Customer.updateCustomer(data);
     return res.json(result);
