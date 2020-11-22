@@ -56,7 +56,7 @@ class Order extends Collection<IOrder> {
               customerId: customerId as AttributeValue,
               orderId: id as AttributeValue,
               PK: customerId as AttributeValue,
-              SK: uniqueKey,
+              SK: `#${uniqueKey}` as AttributeValue,
               GSI1PK: uniqueKey,
               GSI1SK: uniqueKey,
               products: (undefined as unknown) as AttributeValue,
@@ -83,7 +83,6 @@ class Order extends Collection<IOrder> {
       },
     };
     const result = await Collection.Client.query(parameters).promise();
-    console.log(parameters, result);
     if (!result.Count || !result.Items?.length)
       throw new HttpError('Order not found', 404);
     const order = result.Items?.shift();

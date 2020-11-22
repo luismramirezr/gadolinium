@@ -151,6 +151,7 @@ class Customer extends Collection<ICustomer> {
       ExpressionAttributeValues: {
         ':pk': PK,
       },
+      ScanIndexForward: false,
     };
     const customer = await Collection.Client.query(parameters).promise();
 

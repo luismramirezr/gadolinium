@@ -12,6 +12,13 @@ import {
 } from 'types/models';
 
 class OrderController {
+  async index(req: Request, res: Response): Promise<Response> {
+    const customer = req.user as ICustomer & WithKeys;
+
+    const result = await Customer.getCustomerOrders(customer.email);
+    return res.json(result.orders);
+  }
+
   async create(req: Request, res: Response): Promise<Response> {
     const { body } = req;
     const customer = req.user as ICustomer & WithKeys;
@@ -58,13 +65,6 @@ class OrderController {
     if (order.order.customerId !== customer.PK)
       throw new HttpError('Unauthorized', 403);
     return res.json(order);
-  }
-
-  async showCustomerOrders(req: Request, res: Response): Promise<Response> {
-    const customer = req.user as ICustomer & WithKeys;
-
-    const result = await Customer.getCustomerOrders(customer.email);
-    return res.json(result);
   }
 }
 

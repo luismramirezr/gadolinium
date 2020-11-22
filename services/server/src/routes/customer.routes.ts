@@ -10,7 +10,7 @@ routes.put('/addresses/:slug', AddressController.update);
 routes.delete('/addresses/:slug', AddressController.destroy);
 
 routes.post('/orders', OrderController.create);
-routes.get('/orders', OrderController.showCustomerOrders);
+routes.get('/orders', OrderController.index);
 
 routes.get('/orders/:orderId', OrderController.show);
 
