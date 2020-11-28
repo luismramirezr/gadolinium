@@ -53,6 +53,36 @@ export const authentication = async (
   }
 };
 
+export const refreshSession = async (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+) => {
+  if (!req.headers.authorization)
+    return next(new HttpError('Unauthorized1', 403));
+  const { authorization } = req.headers;
+  const token = authorization.split(' ').pop();
+  if (!token) return next(new HttpError('Unauthorized2', 403));
+
+  const rsa = await getRsaKey();
+
+  try {
+    const payload = jwt.verify(token, rsa) as UserAuth;
+    if (payload) {
+      const user =
+        payload.role === 'ADMIN'
+          ? await Admin.getAdmin(payload.email)
+          : await Customer.getCustomer(payload.email);
+      req.user = user;
+      return next();
+    }
+    throw Error('Empty token');
+  } catch (e) {
+    console.log(e);
+    return next(new HttpError('Unauthorized3', 403));
+  }
+};
+
 export const ensureAdmin = async (
   req: Request,
   _res: Response,

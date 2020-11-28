@@ -106,6 +106,35 @@ class Admin extends Collection<IAdmin> {
       tokens: { sessionToken, refreshToken, verificationToken },
     };
   }
+
+  public async refreshSession(
+    email: string
+  ): Promise<{
+    admin: IAdmin;
+    tokens: {
+      sessionToken: string;
+      verificationToken: string;
+    };
+  }> {
+    const admin = await this.getAdmin(email);
+    if (!admin) throw new HttpError('Unauthorized', 403);
+
+    const rsa = await getRsaKey();
+
+    const sessionToken = jwt.sign(
+      { ...admin, hashedPassword: undefined },
+      rsa,
+      {
+        expiresIn: JWT_EXPIRATION,
+      }
+    );
+    const verificationToken = jwt.sign(sessionToken, rsa);
+
+    return {
+      admin: { ...admin, hashedPassword: undefined },
+      tokens: { sessionToken, verificationToken },
+    };
+  }
 }
 
 export default new Admin('ADMIN');

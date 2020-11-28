@@ -31,6 +31,26 @@ class CustomerController {
       tokens: { ...tokens, sessionToken: undefined },
     });
   }
+
+  async update(req: Request, res: Response): Promise<Response> {
+    const user = req.user!;
+    if (user.role === 'ADMIN') {
+      const { admin, tokens } = await Admin.refreshSession(user.email);
+      res.cookie('authentication', tokens.sessionToken);
+      return res.json({
+        admin,
+        tokens: { ...tokens, sessionToken: undefined },
+      });
+    }
+    const { customer, tokens } = await Customer.refreshSession(user.email);
+
+    res.cookie('authentication', tokens.sessionToken);
+
+    return res.json({
+      customer,
+      tokens: { ...tokens, sessionToken: undefined },
+    });
+  }
 }
 
 export default new CustomerController();

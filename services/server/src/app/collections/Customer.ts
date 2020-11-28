@@ -231,6 +231,35 @@ class Customer extends Collection<ICustomer> {
     } as any;
   }
 
+  public async refreshSession(
+    email: string
+  ): Promise<{
+    customer: ICustomer;
+    tokens: {
+      sessionToken: string;
+      verificationToken: string;
+    };
+  }> {
+    const customer = await this.getCustomer(email);
+    if (!customer) throw new HttpError('Unauthorized', 403);
+
+    const rsa = await getRsaKey();
+
+    const sessionToken = jwt.sign(
+      { ...customer, hashedPassword: undefined },
+      rsa,
+      {
+        expiresIn: JWT_EXPIRATION,
+      }
+    );
+    const verificationToken = jwt.sign(sessionToken, rsa);
+
+    return {
+      customer: { ...customer, hashedPassword: undefined },
+      tokens: { sessionToken, verificationToken },
+    };
+  }
+
   public async getCustomerOrders(email: string): Promise<Array<Order>> {
     const PK = this.getKey(email);
     const parameters: QueryInput = {
