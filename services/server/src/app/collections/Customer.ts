@@ -39,7 +39,6 @@ class Customer extends Collection<ICustomer> {
   }
 
   public async removeAvatar(PK: string, file?: string) {
-    console.log(file);
     if (file) {
       const parameters: TransactWriteItemsInput = {
         TransactItems: [
