@@ -52,6 +52,12 @@ export const getToken = (key: string, variation = 0) => {
   return opt.substr(opt.length - options.digits, options.digits);
 };
 
-// const verifyToken = (key: string) {
-
-// }
+export const verifyToken = (key: string, totp: string) => {
+  const currentToken = getToken(key);
+  if (currentToken === totp) return true;
+  const previousToken = getToken(key, -0.2);
+  if (previousToken === totp) return true;
+  const nextToken = getToken(key, 0.2);
+  if (nextToken === totp) return true;
+  return false;
+};

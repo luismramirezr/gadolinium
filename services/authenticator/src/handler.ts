@@ -1,5 +1,5 @@
 import getSecret from 'utils/getSecret';
-import { getToken } from 'utils/totp';
+import { getToken, verifyToken } from 'utils/totp';
 import { APIGatewayProxyHandler } from 'aws-lambda';
 
 export const create: APIGatewayProxyHandler = async () => {
@@ -21,20 +21,18 @@ export const validate: APIGatewayProxyHandler = async (event) => {
   if (!key)
     return {
       statusCode: 404,
-      body: 'No key',
+      body: 'NoKey',
     };
 
   const secretBuffer = await getSecret();
   const secret = secretBuffer.toString();
 
-  const toptKey = getToken(secret);
-
-  const isValid = toptKey === key;
+  const isValid = verifyToken(secret, key);
 
   if (!isValid)
     return {
       statusCode: 404,
-      body: 'Not valid',
+      body: 'NotValid',
     };
   return {
     statusCode: 200,
