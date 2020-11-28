@@ -1,4 +1,4 @@
-import { PagSeguroTransaction } from './gateway/pagseguro';
+import { PagSeguroTransaction } from 'types/gateway/pagseguro';
 
 export type ROLE_ADMIN = 'ADMIN';
 export type ROLE_CUSTOMER = 'CUSTOMER';

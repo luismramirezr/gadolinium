@@ -5,6 +5,7 @@ import getRsaKey from 'utils/getRsaKey';
 import { UserAuth } from 'types/models';
 import Admin from '../collections/Admin';
 import Customer from '../collections/Customer';
+import { verifyToken } from '~/services/authenticator';
 
 export const authentication = async (
   req: Request,
@@ -51,6 +52,18 @@ export const authentication = async (
     console.log(e);
     return next(new HttpError('Unauthorized', 403));
   }
+};
+
+export const internalAuthentication = async (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+) => {
+  if (!req.query.key) return next(new HttpError('Not Found', 404));
+  const { key } = req.query;
+  const auth = await verifyToken(key as string);
+  if (!auth) return next(new HttpError('Not Found', 404));
+  return next();
 };
 
 export const refreshSession = async (

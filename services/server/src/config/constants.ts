@@ -20,3 +20,5 @@ export const DYNAMODB_ENDPOINT = process.env.DYNAMODB_ENDPOINT;
 export const S3_ENDPOINT = process.env.S3_ENDPOINT;
 export const S3_BUCKET = process.env.S3_BUCKET!;
 export const S3_SECRETS_BUCKET = process.env.S3_SECRETS_BUCKET!;
+
+export const AUTHENTICATOR_URL = process.env.AUTHENTICATOR_URL || '';
