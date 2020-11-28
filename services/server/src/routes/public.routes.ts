@@ -6,6 +6,7 @@ import ProductController from 'controllers/public/ProductController';
 import FileController from 'controllers/public/FileController';
 
 import { refreshSession } from 'middlewares/Authentication';
+import TransactionController from '~/app/controllers/public/TransactionController';
 
 const { routes, router } = Route;
 
@@ -20,5 +21,7 @@ routes.get('/categories/:categoryId/products', ProductController.index);
 routes.get('/categories/:categoryId/products/:slug', ProductController.show);
 
 routes.get('/files/:fileId', FileController.show);
+
+routes.post('/transactions', TransactionController.create);
 
 export default router;

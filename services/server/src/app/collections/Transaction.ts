@@ -5,11 +5,9 @@ import {
   AttributeValue,
   GetItemInput,
   PutItemInput,
-  QueryInput,
-  TransactWriteItemsInput,
 } from 'aws-sdk/clients/dynamodb';
 
-import { Transaction as ITransaction, Product, Order } from 'types/models';
+import { Transaction as ITransaction } from 'types/models';
 import HttpError from '~/utils/HttpError';
 
 class Transaction extends Collection<ITransaction> {

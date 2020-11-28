@@ -118,7 +118,7 @@ export type TransactionGeneric = {
       complement: string;
     };
   };
-  reference?: string;
+  reference: string;
 };
 
 export type TransactionWithCreditCard = TransactionGeneric & {
