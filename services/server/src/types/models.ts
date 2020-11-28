@@ -1,3 +1,5 @@
+import { PagSeguroTransaction } from './gateway/pagseguro';
+
 export type ROLE_ADMIN = 'ADMIN';
 export type ROLE_CUSTOMER = 'CUSTOMER';
 
@@ -74,6 +76,12 @@ export interface Order {
   totalValue: number;
   address: { name: string } & Address;
   products: Array<Product & { quantity: number }>;
+}
+
+export interface Transaction {
+  transactionId: string;
+  orderId: string;
+  transaction: PagSeguroTransaction;
 }
 
 export interface File {
