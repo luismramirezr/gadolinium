@@ -7,7 +7,7 @@
     "noUnusedParameters": true,
     "sourceMap": true,
     "module": "commonjs",
-    "types": ["node"],
+    "types": ["node", "jest"],
     "allowJs": true,
     "outDir": "lib",
     "rootDir": "./",

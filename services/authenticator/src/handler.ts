@@ -1,13 +1,12 @@
-import totp from 'totp-generator';
-
-import { APIGatewayProxyHandler } from 'aws-lambda';
 import getSecret from 'utils/getSecret';
+import { getToken } from 'utils/totp';
+import { APIGatewayProxyHandler } from 'aws-lambda';
 
 export const create: APIGatewayProxyHandler = async () => {
   const secretBuffer = await getSecret();
   const secret = secretBuffer.toString();
 
-  const apiKey = totp(secret);
+  const apiKey = getToken(secret);
 
   return {
     statusCode: 200,
@@ -28,7 +27,7 @@ export const validate: APIGatewayProxyHandler = async (event) => {
   const secretBuffer = await getSecret();
   const secret = secretBuffer.toString();
 
-  const toptKey = totp(secret);
+  const toptKey = getToken(secret);
 
   const isValid = toptKey === key;
 
