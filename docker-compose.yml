@@ -29,3 +29,11 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
+  authenticator:
+    build: ./services/authenticator
+    env_file: ./services/authenticator/.env
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./services/authenticator:/usr/src/app
+      - /usr/src/app/node_modules

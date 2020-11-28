@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "lib": ["es2017"],
+    "removeComments": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "sourceMap": true,
+    "module": "commonjs",
+    "types": ["node"],
+    "allowJs": true,
+    "outDir": "lib",
+    "rootDir": "./",
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "moduleResolution": "node",
+    "baseUrl": "./",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "typeRoots": ["node_modules/@types", "src/types"],
+    "paths": {
+      "~/*": ["./src/*"],
+      "types/*": ["./src/types/*"],
+      "config/*": ["./src/config/*"],
+      "services/*": ["./src/services/*"],
+      "utils/*": ["./src/utils/*"]
+    }
+  },
+  "include": ["src", "__tests__"],
+  "exclude": [
+    "node_modules/**/*",
+    ".serverless/**/*",
+    ".build/**/*",
+    ".webpack/**/*",
+    "_warmup/**/*",
+    ".vscode/**/*"
+  ]
+}
