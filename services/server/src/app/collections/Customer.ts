@@ -8,7 +8,6 @@ import {
   AttributeValue,
   GetItemInput,
   QueryInput,
-  DeleteItemInput,
   TransactWriteItemsInput,
   UpdateItemInput,
 } from 'aws-sdk/clients/dynamodb';
