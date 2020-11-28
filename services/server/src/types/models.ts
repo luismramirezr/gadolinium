@@ -34,6 +34,7 @@ export interface Customer {
   role: ROLE_CUSTOMER;
   addresses: { [key: string]: Address | undefined };
   mainAddress: string;
+  avatar?: string;
 }
 
 export interface Address {

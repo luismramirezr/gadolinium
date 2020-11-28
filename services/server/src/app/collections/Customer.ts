@@ -8,10 +8,14 @@ import {
   AttributeValue,
   GetItemInput,
   QueryInput,
+  DeleteItemInput,
+  TransactWriteItemsInput,
+  UpdateItemInput,
 } from 'aws-sdk/clients/dynamodb';
 
 import {
   Customer as ICustomer,
+  File as IFile,
   Order,
   ROLE_CUSTOMER,
   WithGSI,
@@ -19,6 +23,7 @@ import {
 } from 'types/models';
 import HttpError from 'utils/HttpError';
 import getRsaKey from 'utils/getRsaKey';
+import File from './File';
 
 export interface CreateCustomerInput extends ICustomer {
   password: string;
@@ -31,6 +36,93 @@ class Customer extends Collection<ICustomer> {
 
   public getKey(email: string): AttributeValue {
     return `${this.Prefix}#${email}` as any;
+  }
+
+  public async removeAvatar(PK: string, file?: string) {
+    console.log(file);
+    if (file) {
+      const parameters: TransactWriteItemsInput = {
+        TransactItems: [
+          {
+            Delete: {
+              TableName: Collection.TableName,
+              Key: {
+                PK: `FILE#${file}` as AttributeValue,
+                SK: `FILE#${file}` as AttributeValue,
+              },
+            },
+          },
+          {
+            Delete: {
+              TableName: Collection.TableName,
+              Key: {
+                PK: PK as AttributeValue,
+                SK: `#FILE#${file}` as AttributeValue,
+              },
+            },
+          },
+          {
+            Update: {
+              TableName: Collection.TableName,
+              Key: {
+                PK: PK as AttributeValue,
+                SK: PK as AttributeValue,
+              },
+              UpdateExpression: 'SET avatar = :avatar',
+              ExpressionAttributeValues: {
+                ':avatar': '' as AttributeValue,
+              },
+            },
+          },
+        ],
+      };
+      await Collection.Client.transactWrite(parameters).promise();
+      return File.deleteFileFromS3(file);
+    }
+    const parameters: UpdateItemInput = {
+      TableName: Collection.TableName,
+      Key: {
+        PK: PK as AttributeValue,
+        SK: PK as AttributeValue,
+      },
+      UpdateExpression: 'SET avatar = :avatar',
+      ExpressionAttributeValues: {
+        ':avatar': '' as AttributeValue,
+      },
+    };
+    return Collection.Client.update(parameters).promise();
+  }
+
+  public async setAvatar(PK: string, file: IFile & WithKeys & { url: string }) {
+    const parameters: TransactWriteItemsInput = {
+      TransactItems: [
+        {
+          Put: {
+            TableName: Collection.TableName,
+            Item: {
+              ...Collection.transformParameters(file),
+              PK: PK as AttributeValue,
+              SK: `#${file.PK}` as AttributeValue,
+            },
+          },
+        },
+        {
+          Update: {
+            TableName: Collection.TableName,
+            Key: {
+              PK: PK as AttributeValue,
+              SK: PK as AttributeValue,
+            },
+            UpdateExpression: 'SET avatar = :avatar',
+            ExpressionAttributeValues: {
+              ':avatar': file.key as AttributeValue,
+            },
+          },
+        },
+      ],
+    };
+    await Collection.Client.transactWrite(parameters).promise();
+    return true;
   }
 
   public async createCustomer(
@@ -63,9 +155,10 @@ class Customer extends Collection<ICustomer> {
   }
 
   public async getCustomer(
-    email: string
+    email: string,
+    usePK = false
   ): Promise<ICustomer & WithKeys & WithGSI> {
-    const PK = this.getKey(email);
+    const PK = usePK ? (email as AttributeValue) : this.getKey(email);
     const parameters: GetItemInput = {
       TableName: Collection.TableName,
       Key: {
@@ -89,6 +182,7 @@ class Customer extends Collection<ICustomer> {
         ...transformedParameters,
         PK,
         SK: PK,
+        role: 'CUSTOMER' as AttributeValue,
       },
     };
 
@@ -138,28 +232,20 @@ class Customer extends Collection<ICustomer> {
     } as any;
   }
 
-  public async getCustomerOrders(
-    email: string
-  ): Promise<{
-    customer: ICustomer & WithKeys & WithGSI;
-    orders: Array<Order>;
-  }> {
+  public async getCustomerOrders(email: string): Promise<Array<Order>> {
     const PK = this.getKey(email);
     const parameters: QueryInput = {
       TableName: Collection.TableName,
-      KeyConditionExpression: 'PK = :pk',
+      KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
       ExpressionAttributeValues: {
         ':pk': PK,
+        ':sk': '#ORDER' as AttributeValue,
       },
       ScanIndexForward: false,
     };
-    const customer = await Collection.Client.query(parameters).promise();
+    const orders = await Collection.Client.query(parameters).promise();
 
-    if (customer.Items)
-      return {
-        customer: customer.Items.shift() as any,
-        orders: customer.Items as any,
-      } as any;
+    if (orders.Items) return orders.Items as any;
 
     throw new HttpError('Customer not found', 404);
   }

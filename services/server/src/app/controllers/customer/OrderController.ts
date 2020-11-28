@@ -15,8 +15,8 @@ class OrderController {
   async index(req: Request, res: Response): Promise<Response> {
     const customer = req.user as ICustomer & WithKeys;
 
-    const result = await Customer.getCustomerOrders(customer.email);
-    return res.json(result.orders);
+    const orders = await Customer.getCustomerOrders(customer.email);
+    return res.json(orders);
   }
 
   async create(req: Request, res: Response): Promise<Response> {

@@ -15,4 +15,12 @@ export const getSignedUrl = (Key: string) =>
     Key,
   });
 
+export const deleteFile = (Key: string) =>
+  s3
+    .deleteObject({
+      Bucket: S3_BUCKET,
+      Key,
+    })
+    .promise();
+
 export default s3;

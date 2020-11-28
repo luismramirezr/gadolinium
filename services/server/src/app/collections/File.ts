@@ -6,9 +6,9 @@ import {
   PutItemInput,
 } from 'aws-sdk/clients/dynamodb';
 
-import { File as IFile } from 'types/models';
+import { File as IFile, WithKeys } from 'types/models';
 import HttpError from '~/utils/HttpError';
-import { getSignedUrl } from '~/services/s3';
+import { deleteFile, getSignedUrl } from '~/services/s3';
 
 class File extends Collection<IFile> {
   constructor(prefix: string) {
@@ -37,7 +37,9 @@ class File extends Collection<IFile> {
     return data;
   }
 
-  public async getFile(slug: string): Promise<IFile & { url: string }> {
+  public async getFile(
+    slug: string
+  ): Promise<IFile & WithKeys & { url: string }> {
     const PK = this.getUniqueKey(slug);
     const parameters: GetItemInput = {
       TableName: Collection.TableName,
@@ -50,6 +52,10 @@ class File extends Collection<IFile> {
     if (!result.Item) throw new HttpError(`File '${slug}' not found`, 404);
     const url = getSignedUrl(result.Item.key);
     return { ...result.Item, url } as any;
+  }
+
+  public async deleteFileFromS3(key: string): Promise<void> {
+    await deleteFile(key);
   }
 }
 
