@@ -15,7 +15,8 @@ const TopBarLogIn: React.FC = () => {
       <Modal
         open={openModal}
         onClose={() => setOpenModal(false)}
-        title="Log In"
+        prefix="UX.Actions"
+        title="LogIn"
       />
     </Box>
   );

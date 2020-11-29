@@ -8,15 +8,18 @@ import {
   DialogProps,
   Box,
   IconButton,
-  Typography,
 } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import { UseFormMethods, FormProvider } from 'react-hook-form';
+
+import { usePrefix } from 'utils/i18n';
+import Typography from 'components/UI/Typography';
 
 import useStyles from './styles';
 
 export interface Props<T = any> {
   dialogProps?: Partial<DialogProps>;
+  prefix?: string;
   title: string;
   open: boolean;
   onClose(): void;
@@ -27,6 +30,7 @@ export interface Props<T = any> {
 const Modal: React.FC<Props> = ({
   dialogProps,
   title,
+  prefix,
   open,
   onClose,
   actions,
@@ -34,14 +38,14 @@ const Modal: React.FC<Props> = ({
   form,
 }) => {
   const classes = useStyles();
-  // const withPrefix = usePrefix(prefix);
+  const withPrefix = usePrefix(prefix);
 
   const renderContent = () => (
     <>
       <DialogTitle disableTypography className={classes.title}>
         <Box display="flex" justifyContent="space-between">
           <Typography variant="subtitle1" color="primary">
-            {title}
+            {withPrefix(title)}
           </Typography>
           <IconButton size="small" onClick={onClose}>
             <Close />

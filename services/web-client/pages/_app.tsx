@@ -2,12 +2,13 @@ import React from 'react';
 import { AppProps } from 'next/app';
 import Theme from 'styles/Theme';
 import Head from 'next/head';
-import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { SnackbarProvider } from 'notistack';
 import 'typeface-sen';
 
 import { useStore } from 'store';
+
+import IntlProvider from 'utils/i18n';
 
 import Alerts from 'components/Alerts';
 
@@ -41,7 +42,7 @@ function App({ Component, pageProps }: AppProps) {
         <link rel="shortcut icon" href="/favicon/favicon.ico" />
       </Head>
       <Provider store={store}>
-        <IntlProvider locale="en">
+        <IntlProvider>
           <Theme>
             <SnackbarProvider maxSnack={5}>
               <Alerts />
