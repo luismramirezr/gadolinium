@@ -15,3 +15,6 @@ export const isFetchingSession = (state: RootState) =>
   state.authentication.get('fetchSession') === FetchStatus.fetching;
 export const isSessionChecked = (state: RootState) =>
   state.authentication.get('checkedSession');
+
+export const getCustomer = (state: RootState) =>
+  state.authentication.get('customer');
