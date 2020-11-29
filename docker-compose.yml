@@ -8,6 +8,10 @@ services:
     volumes:
       - ./services/server:/usr/src/app
       - /usr/src/app/node_modules/
+    depends_on:
+     - dynamodb-local
+     - authenticator
+     - local-dev-s3
   dynamodb-local:
     image: amazon/dynamodb-local:latest
     command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /data"
@@ -37,3 +41,17 @@ services:
     volumes:
       - ./services/authenticator:/usr/src/app
       - /usr/src/app/node_modules
+    depends_on:
+     - local-dev-s3
+  web-client:
+    build: ./services/web-client
+    env_file: ./services/web-client/.env
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./services/web-client:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/.next
+      - /usr/src/app/.serverless_nextjs
+    depends_on:
+      - server
