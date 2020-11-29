@@ -7,5 +7,6 @@ export default makeStyles((theme) => ({
     fontSize: '1rem',
     color: theme.palette.getContrastText(theme.palette.primary.main),
     backgroundColor: theme.palette.primary.main,
+    cursor: 'pointer',
   },
 }));
