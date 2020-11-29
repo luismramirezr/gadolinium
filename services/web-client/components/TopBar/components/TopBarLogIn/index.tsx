@@ -8,26 +8,37 @@ import {
 } from '@material-ui/core';
 import { LockOutlined, MailOutlineOutlined } from '@material-ui/icons';
 import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers';
+
+import { useDispatch } from 'react-redux';
+import { useRootState } from 'store/util/useRootState';
+import { isFetching } from 'store/Authentication/selectors';
+import { signIn } from 'store/Authentication/actions';
 
 import Modal from 'components/UI/Modal';
 import TextInput from 'components/UI/Form/Field/TextInput';
 import PasswordInput from 'components/UI/Form/Field/PasswordInput';
+import Checkbox from 'components/UI/Form/Checkbox';
+import Button from 'components/UI/Form/Button';
 
 import formSchema, { Form } from './formSchema';
 
 import useStyles from './styles';
-import { yupResolver } from '@hookform/resolvers';
-import Checkbox from 'components/UI/Form/Checkbox';
-import Button from 'components/UI/Form/Button';
 
 const TopBarLogIn: React.FC = () => {
   const classes = useStyles();
+
+  const dispatch = useDispatch();
+  const state = useRootState();
+  const isLoading = isFetching(state);
+
   const formMethods = useForm<Form>({
     resolver: yupResolver(formSchema()),
   });
+
   const [openModal, setOpenModal] = React.useState(false);
 
-  const onSubmit = (data: any) => console.log(data);
+  const onSubmit = (data: Form) => dispatch(signIn(data));
 
   return (
     <Box>
@@ -60,7 +71,7 @@ const TopBarLogIn: React.FC = () => {
                     fullWidth
                     placeholder="UX.Common.Email"
                     name="email"
-                    disabled={false}
+                    disabled={isLoading}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -75,7 +86,7 @@ const TopBarLogIn: React.FC = () => {
                     fullWidth
                     placeholder="UX.Common.Password"
                     name="password"
-                    disabled={false}
+                    disabled={isLoading}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -87,9 +98,9 @@ const TopBarLogIn: React.FC = () => {
                 </Grid>
                 <Grid item container justify="center">
                   <Checkbox
-                    name="rememberMe"
+                    name="saveSession"
                     label="Components.TopBar.TopBarSignIn.RememberMe"
-                    disabled={false}
+                    disabled={isLoading}
                   />
                 </Grid>
               </Grid>
@@ -98,7 +109,7 @@ const TopBarLogIn: React.FC = () => {
                   variant="contained"
                   color="primary"
                   type="submit"
-                  isFetching={false}
+                  isFetching={isLoading}
                   text="UX.Actions.LogIn"
                 />
               </Grid>

@@ -11,6 +11,7 @@ import { useStore } from 'store';
 import IntlProvider from 'utils/i18n';
 
 import Alerts from 'components/Alerts';
+import UserAuthenticator from 'components/UserAuthenticator';
 
 function App({ Component, pageProps }: AppProps) {
   const store = useStore(pageProps.initialReduxState);
@@ -46,7 +47,8 @@ function App({ Component, pageProps }: AppProps) {
           <Theme>
             <SnackbarProvider maxSnack={5}>
               <Alerts />
-              <Component {...pageProps} />
+              <UserAuthenticator />
+              <Component {...pageProps} suppressHydrationWarning />
             </SnackbarProvider>
           </Theme>
         </IntlProvider>

@@ -2,7 +2,7 @@
 /* eslint-disable react/destructuring-assignment */
 import React from 'react';
 import MUIButton, { ButtonProps } from '@material-ui/core/Button';
-import { CircularProgress } from '@material-ui/core';
+import { Box, CircularProgress } from '@material-ui/core';
 
 import { t } from 'utils/i18n';
 import { useRouter } from 'next/router';
@@ -36,7 +36,16 @@ const Button: React.FC<Props> = ({
       >
         {text && t(text)}
         {children}
-        <CircularProgress color="secondary" />
+        <Box
+          position="absolute"
+          height="100%"
+          width="100%"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <CircularProgress color="primary" size={24} />
+        </Box>
       </MUIButton>
     );
 

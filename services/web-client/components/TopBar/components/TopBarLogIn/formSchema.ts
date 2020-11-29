@@ -4,7 +4,7 @@ import { useGetMessage } from 'utils/i18n/getMessage';
 export interface Form {
   email: string;
   password: string;
-  rememberMe: boolean;
+  saveSession: boolean;
 }
 
 const createSchema = () => {

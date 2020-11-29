@@ -87,6 +87,6 @@ export const { removeToken } = Api;
 
 export const parseError = (error: any) => {
   const { response } = error;
-  if (!response) return error;
-  throw new Error(response.data);
+  if (!response) throw new Error(error);
+  throw new Error(response.data.message || response.data);
 };

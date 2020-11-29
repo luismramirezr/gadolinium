@@ -1,2 +1,3 @@
-export const API_URL = process.env.API_URL || '';
-export const LOCAL_STORAGE_PREFIX = process.env.LOCAL_STORAGE_PREFIX || '';
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+export const LOCAL_STORAGE_PREFIX =
+  process.env.NEXT_PUBLIC_LOCAL_STORAGE_PREFIX || '';

@@ -34,11 +34,15 @@ export const fetchCheckAuthenticationFailure = () =>
 
 export const signOutSuccess = () => action('Authentication/SIGN_OUT_SUCCESS');
 
-export const signIn = (
-  email: string,
-  password: string,
-  saveSession: boolean
-): ThunkAction<void, RootState, undefined, AnyAction> => async (dispatch) => {
+export const signIn = ({
+  email,
+  password,
+  saveSession,
+}: {
+  email: string;
+  password: string;
+  saveSession: boolean;
+}): ThunkAction<void, RootState, undefined, AnyAction> => async (dispatch) => {
   dispatch(fetchAuthenticationRequest());
   try {
     const result = await api.signIn(email, password, saveSession);
@@ -48,7 +52,9 @@ export const signIn = (
       saveLocalStorageItem('verificationToken', tokens.verificationToken);
     dispatch(fetchAuthenticationSuccess(customer));
   } catch (e) {
-    dispatch(createAlert({ content: e.message, type: 'error' }));
+    dispatch(
+      createAlert({ content: 'E-mail e/ou senha incorretos', type: 'error' })
+    );
     dispatch(fetchAuthenticationFailure());
   }
 };
