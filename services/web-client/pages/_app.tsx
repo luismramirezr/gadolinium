@@ -3,10 +3,17 @@ import { AppProps } from 'next/app';
 import Theme from 'styles/Theme';
 import Head from 'next/head';
 import { IntlProvider } from 'react-intl';
+import { Provider } from 'react-redux';
 import { SnackbarProvider } from 'notistack';
 import 'typeface-sen';
 
+import { useStore } from 'store';
+
+import Alerts from 'components/Alerts';
+
 function App({ Component, pageProps }: AppProps) {
+  const store = useStore(pageProps.initialReduxState);
+
   React.useEffect(() => {
     const jssStyles = document.querySelector('#jss-server-side');
     jssStyles?.parentElement?.removeChild(jssStyles);
@@ -33,13 +40,16 @@ function App({ Component, pageProps }: AppProps) {
         <link rel="manifest" href="/manifest.json" />
         <link rel="shortcut icon" href="/favicon/favicon.ico" />
       </Head>
-      <IntlProvider locale="en">
-        <Theme>
-          <SnackbarProvider maxSnack={5}>
-            <Component {...pageProps} />
-          </SnackbarProvider>
-        </Theme>
-      </IntlProvider>
+      <Provider store={store}>
+        <IntlProvider locale="en">
+          <Theme>
+            <SnackbarProvider maxSnack={5}>
+              <Alerts />
+              <Component {...pageProps} />
+            </SnackbarProvider>
+          </Theme>
+        </IntlProvider>
+      </Provider>
     </>
   );
 }
