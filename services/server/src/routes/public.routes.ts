@@ -5,11 +5,12 @@ import CategoryController from 'controllers/public/CategoryController';
 import ProductController from 'controllers/public/ProductController';
 import FileController from 'controllers/public/FileController';
 
-import { refreshSession } from 'middlewares/Authentication';
+import { authentication, refreshSession } from 'middlewares/Authentication';
 
 const { routes, router } = Route;
 
 routes.post('/sessions', SessionController.create);
+routes.get('/sessions', [authentication, SessionController.show]);
 routes.put('/sessions', [refreshSession, SessionController.update]);
 routes.post('/customers', CustomerController.create);
 
