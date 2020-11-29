@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "cross-env nodemon src/server.ts"
+    "start": "serverless offline"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
@@ -17,13 +17,15 @@
     "@types/multer-s3": "^2.7.8",
     "@types/node": "^14.14.3",
     "@types/node-fetch": "^2.5.7",
-    "cross-env": "^7.0.2",
-    "nodemon": "^2.0.6",
     "prettier": "^2.1.2",
-    "serverless-plugin-typescript": "^1.1.9",
-    "sucrase": "^3.16.0",
+    "serverless": "2.8.0",
+    "serverless-offline": "^6.8.0",
+    "serverless-webpack": "^5.2.0",
+    "ts-loader": "^5.3.3",
     "tsconfig-paths": "^3.9.0",
-    "typescript": "^4.0.3"
+    "typescript": "^4.0.3",
+    "webpack": "^4.29.0",
+    "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
     "aws-sdk": "^2.783.0",

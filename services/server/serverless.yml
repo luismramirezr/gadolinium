@@ -14,14 +14,21 @@ provider:
   region: us-east-1
 
 plugins:
-  - serverless-dotenv-plugin
-  - serverless-plugin-typescript
+  - serverless-webpack
   - serverless-offline
+
+custom:
+  webpack:
+    webpackConfig: './webpack.config.js'
+    includeModules: true
+  serverless-offline:
+    host: "0.0.0.0"
+    httpPort: 3333
+    noPrependStageInUrl: true
 
 functions:
   app:
     handler: src/app.app
     memorySize: 128
     events:
-      - http: ANY /ac
       - http: 'ANY {proxy+}'

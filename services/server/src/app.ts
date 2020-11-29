@@ -76,5 +76,3 @@ export const { server } = new App();
 App.initializeDatabase();
 
 export const app = serverless(server, { binary: ['image/*', 'video/*'] });
-
-export default app;
