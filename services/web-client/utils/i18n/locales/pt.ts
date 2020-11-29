@@ -19,6 +19,10 @@ export default {
       Remove: 'Remover',
       LogIn: 'Entrar',
     },
+    Common: {
+      Email: 'E-mail',
+      Password: 'Senha',
+    },
     UserMenu: {
       Logout: 'Encerrar sessão',
     },
@@ -30,12 +34,19 @@ export default {
       },
     },
   },
+  Components: {
+    TopBar: {
+      TopBarSignIn: {
+        RememberMe: 'Manter sessão',
+      },
+    },
+  },
   Footer: {
     Copyright:
       'Copyright \u00A9 {year} Gadolinium. Todos os direitos reservados.',
     Author: 'Made with \u2665 by Coding Labs',
   },
-  Forms: {
+  Form: {
     Errors: {
       Required: 'Este campo é obrigatório',
       InvalidEmail: 'O email é inválido',

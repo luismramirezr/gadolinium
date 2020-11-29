@@ -44,7 +44,7 @@ const Modal: React.FC<Props> = ({
     <>
       <DialogTitle disableTypography className={classes.title}>
         <Box display="flex" justifyContent="space-between">
-          <Typography variant="subtitle1" color="primary">
+          <Typography variant="h5" color="primary">
             {withPrefix(title)}
           </Typography>
           <IconButton size="small" onClick={onClose}>

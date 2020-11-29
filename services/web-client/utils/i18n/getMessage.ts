@@ -1,3 +1,5 @@
+import React from 'react';
+import { IntlContext } from 'utils/i18n';
 import { createIntl, createIntlCache } from 'react-intl';
 import { defaultLocale, Locales } from './';
 import formattedMessages from './messages';
@@ -23,5 +25,10 @@ export const withLocale = (locale: Locales) => (id: string) =>
 
 export const withPrefix = (locale: Locales, prefix: string) => (id: string) =>
   getMessage(locale, `${prefix}.${id}`);
+
+export const useGetMessage = (prefix: string) => {
+  const i18n = React.useContext(IntlContext);
+  return withPrefix(i18n.locale, prefix);
+};
 
 export default getMessage;
