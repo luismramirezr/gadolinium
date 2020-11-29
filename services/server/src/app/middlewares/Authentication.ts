@@ -12,10 +12,12 @@ export const authentication = async (
   _res: Response,
   next: NextFunction
 ) => {
-  const cookies = req.cookies;
+  const cookies = req.signedCookies;
+
   if (!cookies?.authentication) next(new HttpError('Unauthorized', 403));
   if (!req.headers.authorization)
     return next(new HttpError('Unauthorized', 403));
+
   const { authentication } = cookies;
 
   const rsa = await getRsaKey();
@@ -40,7 +42,7 @@ export const authentication = async (
 
       try {
         const payload = jwt.verify(token, rsa) as string;
-        if (payload && payload === req.cookies?.authentication) return next();
+        if (payload && payload === authentication) return next();
         throw Error('Empty token');
       } catch (e) {
         console.log(e);

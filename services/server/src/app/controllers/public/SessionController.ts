@@ -1,21 +1,22 @@
 import Customer from 'collections/Customer';
 import Admin from 'collections/Admin';
-// import { COOKIE_OPTIONS } from 'config/constants';
+import { COOKIE_OPTIONS } from 'config/constants';
 
 import { Request, Response } from 'express';
 
-class CustomerController {
+class SessionController {
   async create(req: Request, res: Response): Promise<Response> {
     const { body } = req;
+
+    const cookieOptions = {
+      ...COOKIE_OPTIONS,
+      maxAge: body.saveSession ? COOKIE_OPTIONS.maxAge : 0,
+    };
 
     if (body.asAdmin) {
       const { admin, tokens } = await Admin.signIn(body.email, body.password);
 
-      res.cookie(
-        'authentication',
-        tokens.sessionToken,
-        body.saveSession ?? { expires: 0 }
-      );
+      res.cookie('authentication', tokens.sessionToken, cookieOptions);
 
       return res.json({
         admin,
@@ -28,11 +29,7 @@ class CustomerController {
       body.password
     );
 
-    res.cookie(
-      'authentication',
-      tokens.sessionToken,
-      body.saveSession ?? { expires: 0 }
-    );
+    res.cookie('authentication', tokens.sessionToken, cookieOptions);
 
     return res.json({
       customer,
@@ -66,4 +63,4 @@ class CustomerController {
   }
 }
 
-export default new CustomerController();
+export default new SessionController();

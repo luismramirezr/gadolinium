@@ -6,6 +6,7 @@ export const PAPERTRAIL_HOST = process.env.PAPERTRAIL_HOST;
 export const PAPERTRAIL_PORT = process.env.PAPERTRAIL_PORT;
 
 export const SALT = process.env.SALT;
+export const COOKIE_SECRET = process.env.COOKIE_SECRET;
 export const RSA_KEY = process.env.RSA_KEY!;
 export const JWT_EXPIRATION = process.env.JWT_EXPIRATION!;
 export const COOKIE_OPTIONS = {

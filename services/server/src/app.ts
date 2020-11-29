@@ -7,7 +7,7 @@ import morganBody from 'morgan-body';
 import logger from 'utils/logger';
 import HttpExceptionHandler from 'middlewares/HttpExceptionHandler';
 import { DynamoDB, TableSchema } from 'database/Client';
-import { TABLE_NAME } from 'config/constants';
+import { COOKIE_SECRET, TABLE_NAME } from 'config/constants';
 
 import routes from './routes';
 
@@ -25,7 +25,7 @@ class App {
   middlewares(): void {
     this.server.use(cors());
     this.server.use(bodyParser.json());
-    this.server.use(cookieParser());
+    this.server.use(cookieParser(COOKIE_SECRET));
   }
 
   logger(): void {
