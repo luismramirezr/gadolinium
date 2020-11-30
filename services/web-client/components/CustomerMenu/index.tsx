@@ -1,7 +1,10 @@
 import React from 'react';
+import { useRouter } from 'next/router';
+import { useDispatch } from 'react-redux';
 import { Menu, MenuItem } from '@material-ui/core';
 
 import { usePrefix } from 'utils/i18n';
+import { signOut } from 'store/Authentication/actions';
 
 interface Props {
   anchorEl: HTMLElement | null;
@@ -9,6 +12,14 @@ interface Props {
 }
 
 const CustomerMenu: React.FC<Props> = ({ anchorEl, handleClose }) => {
+  const { push } = useRouter();
+  const dispatch = useDispatch();
+
+  const handleLogOut = () => {
+    dispatch(signOut());
+    push('/');
+  };
+
   const t = usePrefix('Components.TopBar.CustomerMenu');
 
   return (
@@ -19,9 +30,9 @@ const CustomerMenu: React.FC<Props> = ({ anchorEl, handleClose }) => {
       open={Boolean(anchorEl)}
       onClose={handleClose}
     >
-      <MenuItem onClick={handleClose}>{t('MyOrders')}</MenuItem>
-      <MenuItem onClick={handleClose}>{t('MyAccount')}</MenuItem>
-      <MenuItem onClick={handleClose}>{t('LogOut')}</MenuItem>
+      <MenuItem onClick={() => push('/meus-pedidos')}>{t('MyOrders')}</MenuItem>
+      <MenuItem onClick={() => push('/minha-conta')}>{t('MyAccount')}</MenuItem>
+      <MenuItem onClick={handleLogOut}>{t('LogOut')}</MenuItem>
     </Menu>
   );
 };
