@@ -14,7 +14,7 @@ export const authentication = async (
 ) => {
   const cookies = req.signedCookies;
 
-  if (!cookies?.authentication) next(new HttpError('Unauthorized', 403));
+  if (!cookies?.authentication) return next(new HttpError('Unauthorized', 403));
   if (!req.headers.authorization)
     return next(new HttpError('Unauthorized', 403));
 
