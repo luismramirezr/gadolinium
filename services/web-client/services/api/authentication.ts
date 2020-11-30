@@ -20,7 +20,11 @@ export const signIn = (
   saveSession: boolean
 ): Promise<SignInPayload> =>
   api
-    .post('/sessions', { email, password, saveSession })
+    .post(
+      '/sessions',
+      { email, password, saveSession },
+      { withCredentials: true }
+    )
     .then((response) => response.data)
     .catch(parseError);
 

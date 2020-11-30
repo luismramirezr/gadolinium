@@ -1,13 +1,13 @@
 import express, { Express } from 'express';
 import bodyParser from 'body-parser';
-import cors from 'cors';
+import cors, { CorsOptionsDelegate } from 'cors';
 import cookieParser from 'cookie-parser';
 import serverless from 'serverless-http';
 import morganBody from 'morgan-body';
 import logger from 'utils/logger';
 import HttpExceptionHandler from 'middlewares/HttpExceptionHandler';
 import { DynamoDB, TableSchema } from 'database/Client';
-import { COOKIE_SECRET, TABLE_NAME } from 'config/constants';
+import { COOKIE_SECRET, CORS_WHITELIST, TABLE_NAME } from 'config/constants';
 
 import routes from './routes';
 
@@ -23,7 +23,23 @@ class App {
   }
 
   middlewares(): void {
-    this.server.use(cors());
+    const whitelist = CORS_WHITELIST.split(',');
+
+    const corsOptions: CorsOptionsDelegate = (
+      req: Express.Request,
+      callback: Function
+    ) => {
+      // @ts-ignore
+      const { headers } = req;
+      const { origin } = headers;
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, { origin, credentials: true });
+      } else {
+        callback(new Error(`Origin "${origin}" is not allowed by CORS`));
+      }
+    };
+
+    this.server.use(cors(corsOptions));
     this.server.use(bodyParser.json());
     this.server.use(cookieParser(COOKIE_SECRET));
   }
