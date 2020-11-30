@@ -55,6 +55,7 @@ const TopBarLogIn: React.FC = () => {
         dialogProps={{
           maxWidth: 'xs',
         }}
+        disabled={isLoading}
       >
         <Box margin="auto">
           <Container>

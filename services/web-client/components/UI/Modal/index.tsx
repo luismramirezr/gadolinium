@@ -25,6 +25,7 @@ export interface Props<T = any> {
   onClose(): void;
   actions?: Array<React.ReactNode>;
   form?: { formMethods: UseFormMethods<T>; onSubmit(data: any): void };
+  disabled?: boolean;
 }
 
 const Modal: React.FC<Props> = ({
@@ -36,9 +37,15 @@ const Modal: React.FC<Props> = ({
   actions,
   children,
   form,
+  disabled,
 }) => {
   const classes = useStyles();
   const withPrefix = usePrefix(prefix);
+
+  const handleClose = () => {
+    if (disabled) return null;
+    onClose();
+  };
 
   const renderContent = () => (
     <>
@@ -47,7 +54,7 @@ const Modal: React.FC<Props> = ({
           <Typography variant="h5" color="primary">
             {withPrefix(title)}
           </Typography>
-          <IconButton size="small" onClick={onClose}>
+          <IconButton size="small" onClick={handleClose}>
             <Close />
           </IconButton>
         </Box>
@@ -75,7 +82,9 @@ const Modal: React.FC<Props> = ({
       open={open}
       scroll={dialogProps?.scroll || 'paper'}
       maxWidth={dialogProps?.maxWidth || 'md'}
-      disableBackdropClick={dialogProps?.disableBackdropClick || true}
+      disableBackdropClick={
+        disabled || dialogProps?.disableBackdropClick || true
+      }
       fullWidth={dialogProps?.fullWidth || true}
       onClose={onClose}
       PaperProps={{
