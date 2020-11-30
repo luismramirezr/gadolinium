@@ -1,14 +1,20 @@
 import React from 'react';
-import { Avatar } from '@material-ui/core';
+import { Avatar, Box } from '@material-ui/core';
 
 import { useRootState } from 'store/util/useRootState';
 
 import useStyles from './styles';
 import { getCustomer } from 'store/Authentication/selectors';
+import CustomerMenu from 'components/CustomerMenu';
 
 const UserAvatar = () => {
   const state = useRootState();
   const customer = getCustomer(state);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  const closeCustomerMenu = () => {
+    setAnchorEl(null);
+  };
 
   if (!customer) return null;
 
@@ -18,9 +24,16 @@ const UserAvatar = () => {
 
   const classes = useStyles();
   return (
-    <Avatar className={classes.avatar} src={avatar}>
-      {initials}
-    </Avatar>
+    <Box>
+      <Avatar
+        className={classes.avatar}
+        src={avatar}
+        onClick={(event) => setAnchorEl(event.currentTarget)}
+      >
+        {initials}
+      </Avatar>
+      <CustomerMenu anchorEl={anchorEl} handleClose={closeCustomerMenu} />
+    </Box>
   );
 };
 

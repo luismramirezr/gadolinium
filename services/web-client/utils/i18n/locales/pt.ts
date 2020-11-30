@@ -23,9 +23,6 @@ export default {
       Email: 'E-mail',
       Password: 'Senha',
     },
-    UserMenu: {
-      Logout: 'Encerrar sessão',
-    },
     FileUpload: {
       ErrorCodes: {
         'file-too-large': 'O arquivo é maior que o permitido ({size})',
@@ -38,6 +35,11 @@ export default {
     TopBar: {
       TopBarSignIn: {
         RememberMe: 'Manter sessão',
+      },
+      CustomerMenu: {
+        MyOrders: 'Meus pedidos',
+        MyAccount: 'Minha conta',
+        LogOut: 'Sair',
       },
     },
   },
