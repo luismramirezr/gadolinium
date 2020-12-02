@@ -16,5 +16,6 @@ export default {
       const filename = `${id}${extname(file.originalname)}`;
       return cb(null, filename);
     },
+    contentType: (_req: Request, file, cb) => cb(null, file.mimetype),
   }),
 };
