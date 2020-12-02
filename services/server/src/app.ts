@@ -32,6 +32,7 @@ class App {
       // @ts-ignore
       const { headers } = req;
       const { origin } = headers;
+      if (!origin) return callback(null, true);
       if (whitelist.indexOf(origin) !== -1) {
         callback(null, { origin, credentials: true });
       } else {
