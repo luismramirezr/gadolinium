@@ -31,6 +31,10 @@ export default {
       },
     },
   },
+  Navigation: {
+    Home: 'Início',
+    Categories: 'Categorias',
+  },
   Components: {
     TopBar: {
       TopBarSignIn: {
