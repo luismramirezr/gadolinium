@@ -38,5 +38,17 @@ WebClient -> user
 ## Usage
 ### Pre-requisites
 1. Docker Compose
+1. Puma-dev
 ### Run
-Run by using `docker-compose up` on root folder
+1. First, create endpoints with `puma-dev`:
+```bash
+echo '3000' > ~/.puma-dev/gadolinium
+echo '3001' > ~/.puma-dev/backoffice.gadolinium
+echo '3333' > ~/.puma-dev/api.gadolinium
+echo '4000' > ~/.puma-dev/authenticator.gadolinium
+echo '5000' > ~/.puma-dev/payment.gadolinium
+echo '6000' > ~/.puma-dev/notifier.gadolinium
+```
+2. Create `.env` files on each service root based on `.env.example`
+3. Start containers by using `docker-compose up` on root folder
+4. Access `http://gadolinium.test` for `web-client` or `http://backoffice.gadolinium.test` for `backoffice`.
