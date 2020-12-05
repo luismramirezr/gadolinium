@@ -43,6 +43,16 @@ services:
       - /usr/src/app/node_modules
     depends_on:
      - local-dev-s3
+  payment-service:
+    build: ./services/payment-service
+    env_file: ./services/payment-service/.env
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./services/payment-service:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+     - authenticator
   web-client:
     build: ./services/web-client
     env_file: ./services/web-client/.env
