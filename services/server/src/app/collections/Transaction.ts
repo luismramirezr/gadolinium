@@ -21,8 +21,8 @@ class Transaction extends Collection<ITransaction> {
 
   public async createTransaction(
     orderId: string,
-    data: ITransaction
-  ): Promise<ITransaction> {
+    data: Partial<ITransaction>
+  ): Promise<Partial<ITransaction>> {
     const id = ulid();
     const uniqueKey = this.getUniqueKey(id);
     const transformedParameters = Collection.transformParameters(data);
@@ -40,7 +40,7 @@ class Transaction extends Collection<ITransaction> {
       ConditionExpression: 'attribute_not_exists(PK)',
     };
     await Collection.Client.put(parameters).promise();
-    return data;
+    return { ...data, orderId: id };
   }
 
   public async getTransaction(transactionId: string): Promise<Transaction> {

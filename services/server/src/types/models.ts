@@ -32,6 +32,9 @@ export interface Customer {
   name: string;
   surname: string;
   email: string;
+  cpf: string;
+  phone: string;
+  dob: string;
   hashedPassword?: string;
   role: ROLE_CUSTOMER;
   addresses: { [key: string]: Address | undefined };
@@ -43,11 +46,12 @@ export interface Address {
   name: string;
   slug: string;
   street: string;
-  number: string;
+  number: number;
   complement: string;
-  neigh: string;
+  district: string;
+  city: string;
   state: string;
-  zip: string;
+  postalCode: string;
   country: string;
 }
 
@@ -102,3 +106,37 @@ export interface File {
   etag: string;
   public: boolean;
 }
+
+export type CreditCardPayment = {
+  method: 'creditCard';
+  creditCard: {
+    token: string;
+    holder: {
+      name: string;
+      documents: { document: { type: 'CPF'; value: string } };
+      phone: { areaCode: string; number: string };
+      birthDate: string;
+    };
+    installment: {
+      quantity: number;
+      value: number;
+    };
+  };
+  billingAddress: {
+    street: string;
+    complement: string;
+    number: string;
+    district: string;
+    city: string;
+    state: string;
+    postalCode: string;
+  };
+};
+
+export type BoletoPayment = {
+  method: 'boleto';
+};
+
+export type PaymentForm = (CreditCardPayment | BoletoPayment) & {
+  hash: string;
+};

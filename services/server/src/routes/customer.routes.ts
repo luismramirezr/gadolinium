@@ -3,6 +3,7 @@ import AddressController from 'controllers/customer/AddressController';
 import OrderController from 'controllers/customer/OrderController';
 import FileController from 'controllers/customer/FileController';
 import CustomerController from 'controllers/customer/CustomerController';
+import TransactionController from 'controllers/customer/TransactionController';
 
 import uploadFileMiddleware from 'middlewares/UploadFile';
 
@@ -22,6 +23,8 @@ routes.post('/orders', OrderController.create);
 routes.get('/orders', OrderController.index);
 
 routes.get('/orders/:orderId', OrderController.show);
+
+routes.post('/orders/:orderId/transactions', TransactionController.create);
 
 routes.get('/profile', CustomerController.show);
 routes.put('/profile', CustomerController.update);

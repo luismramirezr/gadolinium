@@ -25,3 +25,4 @@ export const S3_BUCKET = process.env.S3_BUCKET!;
 export const S3_SECRETS_BUCKET = process.env.S3_SECRETS_BUCKET!;
 
 export const AUTHENTICATOR_URL = process.env.AUTHENTICATOR_URL || '';
+export const PAYMENT_SERVICE_URL = process.env.PAYMENT_SERVICE_URL || '';

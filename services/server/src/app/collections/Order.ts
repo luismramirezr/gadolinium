@@ -7,7 +7,13 @@ import {
   TransactWriteItemsInput,
 } from 'aws-sdk/clients/dynamodb';
 
-import { Order as IOrder, Product } from 'types/models';
+import {
+  Order as IOrder,
+  Product,
+  Transaction,
+  WithGSI,
+  WithKeys,
+} from 'types/models';
 import HttpError from '~/utils/HttpError';
 
 class Order extends Collection<IOrder> {
@@ -72,7 +78,11 @@ class Order extends Collection<IOrder> {
 
   public async getOrder(
     orderId: string
-  ): Promise<{ order: IOrder; products: Array<Product> }> {
+  ): Promise<{
+    order: IOrder;
+    products: Array<Product & WithKeys & WithGSI & { quantity: number }>;
+    transactions: Array<Transaction & WithKeys & WithGSI>;
+  }> {
     const PK = this.getUniqueKey(orderId);
     const parameters: QueryInput = {
       TableName: Collection.TableName,
@@ -85,10 +95,22 @@ class Order extends Collection<IOrder> {
     const result = await Collection.Client.query(parameters).promise();
     if (!result.Count || !result.Items?.length)
       throw new HttpError('Order not found', 404);
-    const order = result.Items?.shift();
+
+    const data = result.Items as Array<
+      | (Order & WithKeys & WithGSI)
+      | (Product & WithKeys & WithGSI)
+      | (Transaction & WithKeys & WithGSI)
+    >;
+
+    const order = data.filter((item) => item.SK === `#${PK}`).pop();
+    const transactions = data.filter((item) =>
+      item.PK.startsWith('TRANSACTION')
+    );
+    const products = data.filter((item) => item.GSI1SK.startsWith('PRODUCT'));
     return {
       order,
-      products: result.Items,
+      products,
+      transactions,
     } as any;
   }
 }
