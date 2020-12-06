@@ -13,8 +13,8 @@ AWS serverless e-commerce application.
 ### Diagram
 ```plantuml
 actor user
-user -> WebClient : Place order
-WebClient -> server
+user -> webClient : Place order
+webClient -> server
 server -> authenticator : Request token
 authenticator -> server
 server -> payment_service : Make payment
@@ -23,16 +23,45 @@ authenticator -> payment_service
 payment_service -> payment_gateway : Request payment
 payment_gateway -> payment_service : Response
 payment_service -> server
-server -> WebClient
-WebClient -> user
+server -> webClient
+webClient -> user
 payment_gateway -> notifier : Transaction update
 notifier -> authenticator : Request token
 authenticator -> notifier
 notifier -> server : Update Order
 server -> authenticator : Verify token
 authenticator -> server
-server -> WebClient
-WebClient -> user
+server -> webClient
+webClient -> user
+```
+
+### Order pipeline
+```plantuml
+actor user
+user -> webClient : Register as Customer
+webClient -> server : POST /customer
+server -> webClient
+alt : sign in
+user -> webClient : Sign in
+webClient -> server : POST /sessions
+server -> webClient
+end
+user -> webClient : Place Order
+webClient -> server : POST /customer/:customerId/orders
+note left: Order includes products and selected address
+server -> webClient
+webClient -> server : POST /customer/:customerId/orders/:orderId/transactions
+note left : Sends aditional payment data (eg. credit card)
+server -> authenticator : POST /create
+authenticator -> server
+server -> payment_service : POST /makePayment?key={key}
+payment_service -> authenticator : POST /verify
+authenticator -> payment_service
+payment_service -> payment_gateway : Place order
+payment_gateway -> payment_service
+payment_service -> server
+server -> webClient
+webClient -> user
 ```
 
 ## Usage
