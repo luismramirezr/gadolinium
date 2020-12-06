@@ -64,6 +64,25 @@ server -> webClient
 webClient -> user
 ```
 
+### Notification pipeline
+```plantuml
+payment_gateway -> SNS
+SNS -> notifier : POST /notification
+notifier -> authenticator : POST /create
+authenticator -> notifier
+notifier -> payment_service : POST /notification?key={key}
+payment_service -> authenticator : POST /verify
+authenticator -> payment_service
+payment_service -> payment_gateway : GET /notification
+note right : Get transaction update from notification
+payment_gateway -> payment_service
+payment_service -> authenticator : POST /create
+authenticator -> payment_service
+payment_service -> server : PUT /orders/:orderId/transactions
+note right : Update Order status
+server -> payment_service
+```
+
 ## Usage
 ### Pre-requisites
 1. Docker Compose
