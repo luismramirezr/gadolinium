@@ -27,10 +27,17 @@ custom:
     noPrependStageInUrl: true
 
 functions:
-  hello:
-    handler: src/handler.hello
+  createSession:
+    handler: src/handler.createSession
     memorySize: 128
     events:
       - http:
-          path: '/'
-          method: 'get'
+          path: '/sessions'
+          method: 'post'
+  createPayment:
+    handler: src/handler.createPayment
+    memorySize: 128
+    events:
+      - http:
+          path: '/payments'
+          method: 'post'
