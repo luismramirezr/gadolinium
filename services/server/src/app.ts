@@ -10,6 +10,7 @@ import { DynamoDB, TableSchema } from 'database/Client';
 import { COOKIE_SECRET, CORS_WHITELIST, TABLE_NAME } from 'config/constants';
 
 import routes from './routes';
+import HttpError from './utils/HttpError';
 
 class App {
   public server: Express;
@@ -33,11 +34,16 @@ class App {
       const { headers } = req;
       const { origin } = headers;
       if (!origin) return callback(null, true);
-      if (whitelist.indexOf(origin) !== -1) {
-        callback(null, { origin, credentials: true });
-      } else {
-        callback(new Error(`Origin "${origin}" is not allowed by CORS`));
+      for (let i = 0; i < whitelist.length; i += 1) {
+        const test = new RegExp(whitelist[i]).test(origin);
+        console.log('testing', whitelist[i], test);
+        if (test) return callback(null, { origin, credentials: true });
       }
+      console.log(`Origin "${origin}" is not allowed by CORS`);
+      callback(
+        new HttpError(`Origin "${origin}" is not allowed by CORS`, 400),
+        false
+      );
     };
 
     this.server.use(cors(corsOptions));
