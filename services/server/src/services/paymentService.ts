@@ -12,7 +12,7 @@ import HttpError from '~/utils/HttpError';
 
 export const makePayment = async (
   data: GetPaymentPayloadData
-): Promise<PagSeguroTransaction> => {
+): Promise<{ transaction: PagSeguroTransaction }> => {
   const { apiKey: key } = await createToken();
 
   const qs = new URLSearchParams({ key });

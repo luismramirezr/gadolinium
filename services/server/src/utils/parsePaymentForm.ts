@@ -18,6 +18,7 @@ export const parseFormData = (
     };
   });
   const paymentData = {
+    ref: order.orderId,
     items,
     sender: {
       hash: form.hash,

@@ -1,4 +1,4 @@
-service: gadolinium-payment-service
+service: gadolinium-authenticator
 # app and org for use with dashboard.serverless.com
 #app: your-app-name
 #org: your-org-name
@@ -23,28 +23,13 @@ custom:
     includeModules: true
   serverless-offline:
     host: "0.0.0.0"
-    httpPort: 5000
+    httpPort: 6000
     noPrependStageInUrl: true
 
 functions:
-  createSession:
-    handler: src/handler.createSession
-    memorySize: 128
-    events:
-      - http:
-          path: '/sessions'
-          method: 'post'
-  createPayment:
-    handler: src/handler.createPayment
-    memorySize: 128
-    events:
-      - http:
-          path: '/payments'
-          method: 'post'
   notification:
     handler: src/handler.notification
-    memorySize: 128
     events:
       - http:
-          path: '/notifications'
+          path: 'notification'
           method: 'post'

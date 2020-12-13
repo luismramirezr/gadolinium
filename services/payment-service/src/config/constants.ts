@@ -6,6 +6,8 @@ export const PAPERTRAIL_HOST = process.env.PAPERTRAIL_HOST;
 export const PAPERTRAIL_PORT = process.env.PAPERTRAIL_PORT;
 
 export const AUTHENTICATOR_URL = process.env.AUTHENTICATOR_URL || '';
+export const SERVER_URL = process.env.SERVER_URL || '';
+export const NOTIFIER_URL = process.env.NOTIFIER_URL || '';
 
 export const PAGSEGURO_EMAIL = process.env.PAGSEGURO_EMAIL || '';
 export const PAGSEGURO_TOKEN = process.env.PAGSEGURO_TOKEN || '';

@@ -3,6 +3,7 @@ import { ulid } from 'ulid';
 
 import {
   AttributeValue,
+  PutItemInput,
   QueryInput,
   TransactWriteItemsInput,
 } from 'aws-sdk/clients/dynamodb';
@@ -74,6 +75,19 @@ class Order extends Collection<IOrder> {
     };
     await Collection.Client.transactWrite(parameters).promise();
     return data;
+  }
+
+  public async updateOrderStatus(
+    orderId: string,
+    status: string
+  ): Promise<IOrder> {
+    const order = await this.getOrder(orderId);
+    const parameters: PutItemInput = {
+      TableName: Collection.TableName,
+      Item: Collection.transformParameters({ ...order.order, status }),
+    };
+    await Collection.Client.put(parameters).promise();
+    return { ...order, status } as any;
   }
 
   public async getOrder(

@@ -24,7 +24,6 @@ class PagSeguro {
   private static api: (
     endpoint: string,
     options: RequestInit,
-    withCredentials?: boolean
   ) => Promise<Response>;
   private static qs: URLSearchParams;
 
@@ -46,12 +45,9 @@ class PagSeguro {
     PagSeguro.api = (
       endpoint: string,
       options: RequestInit,
-      withCredentials = true
     ) =>
       fetch(
-        `${PagSeguro.url}/${endpoint}${
-          withCredentials ? `?${PagSeguro.qs}` : ''
-        }`,
+        `${PagSeguro.url}/${endpoint}?${PagSeguro.qs}`,
         options
       );
   }
@@ -163,9 +159,8 @@ class PagSeguro {
         `/transactions/notifications/${notificationCode}`,
         {
           method: 'get',
-        },
-        false
-      ).then((response) => response.text());
+        }
+      ).then((response) => response.textConverted());
       return parser.parse(response);
     } catch (e) {
       const error = parser.parse(e.error);
@@ -192,7 +187,7 @@ class PagSeguro {
     try {
       const response = await PagSeguro.api('/sessions', {
         method: 'post',
-      }).then((response) => response.text());
+      }).then((response) => response.textConverted());
       return parser.parse(response);
     } catch (e) {
       console.log(e);

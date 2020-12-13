@@ -1,4 +1,4 @@
-import TransactionController from '~/app/controllers/internal/TransactionController';
+import TransactionController from 'controllers/internal/TransactionController';
 
 import Route from './Route';
 

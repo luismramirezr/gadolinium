@@ -53,6 +53,16 @@ services:
       - /usr/src/app/node_modules
     depends_on:
      - authenticator
+  notifier:
+    build: ./services/notifier
+    env_file: ./services/notifier/.env
+    ports:
+      - "6000:6000"
+    volumes:
+      - ./services/notifier:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+     - authenticator
   web-client:
     build: ./services/web-client
     env_file: ./services/web-client/.env

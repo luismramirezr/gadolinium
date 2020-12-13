@@ -22,7 +22,7 @@ class PaymentController {
       const payment = await makePayment(paymentData);
       const transaction = await Transaction.createTransaction(orderId, {
         orderId,
-        transaction: payment,
+        transaction: payment.transaction,
       });
 
       return res.json(transaction);

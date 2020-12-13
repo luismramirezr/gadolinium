@@ -1,0 +1,33 @@
+{
+  "moduleFileExtensions": [
+    "js",
+    "jsx",
+    "ts",
+    "tsx"
+  ],
+  "modulePaths": [
+    "<rootDir>/src"
+  ],
+  "moduleDirectories": [
+    "node_modules"
+  ],
+  "testPathIgnorePatterns": [
+    "<rootDir>/node_modules/"
+  ],
+  "testRegex": ".spec.(j|t)sx?$",
+  "moduleNameMapper": {
+    "^~/(.*)$": "<rootDir>/src/$1"
+  },
+  "setupFiles": [],
+  "setupFilesAfterEnv": [],
+  "transform": {
+    "^.+.tsx?$": "ts-jest",
+    "^.+.jsx?$": "babel-jest"
+  },
+  "globals": {
+    "ts-jest": {
+      "diagnostics": true,
+      "tsConfig": "tsconfig.json"
+    }
+  }
+}

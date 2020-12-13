@@ -41,8 +41,8 @@ export const authentication = async (
       if (!token) return next(new HttpError('Unauthorized', 403));
 
       try {
-        const payload = jwt.verify(token, rsa) as string;
-        if (payload && payload === authentication) return next();
+        const uncryptedToken = jwt.verify(token, rsa) as string;
+        if (uncryptedToken && uncryptedToken === authentication) return next();
         throw Error('Empty token');
       } catch (e) {
         console.log(e);
@@ -77,7 +77,7 @@ export const refreshSession = async (
     return next(new HttpError('Unauthorized1', 403));
   const { authorization } = req.headers;
   const token = authorization.split(' ').pop();
-  if (!token) return next(new HttpError('Unauthorized2', 403));
+  if (!token) return next(new HttpError('Unauthorized', 403));
 
   const rsa = await getRsaKey();
 
@@ -94,7 +94,7 @@ export const refreshSession = async (
     throw Error('Empty token');
   } catch (e) {
     console.log(e);
-    return next(new HttpError('Unauthorized3', 403));
+    return next(new HttpError('Unauthorized', 403));
   }
 };
 
