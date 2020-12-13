@@ -75,3 +75,14 @@ services:
       - /usr/src/app/.serverless_nextjs
     depends_on:
       - server
+  admin-client:
+    build: ./services/admin-client
+    env_file: ./services/admin-client/.env.local
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./services/admin-client:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/.build
+    depends_on:
+      - server
