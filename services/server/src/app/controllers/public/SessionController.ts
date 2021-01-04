@@ -39,7 +39,8 @@ class SessionController {
 
   async show(req: Request, res: Response): Promise<Response> {
     const user = req.user;
-    return res.json({ customer: user, isAuth: true });
+    const key = user!.role.toLocaleLowerCase();
+    return res.json({ [key]: user, isAuth: true });
   }
 
   async update(req: Request, res: Response): Promise<Response> {
